@@ -158,7 +158,6 @@ join dannys_diner.menu m using(product_id)
 left join  dannys_diner.members me using(customer_id)
 limit 5
 
-
 -- Rank All The Things
 with users_details as (
     select *,
