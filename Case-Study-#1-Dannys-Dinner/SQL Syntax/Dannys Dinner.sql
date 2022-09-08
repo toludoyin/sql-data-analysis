@@ -19,8 +19,7 @@ join dannys_diner.menu m using(product_id)
 group by 1
 
 -- 3. What was the first item from the menu purchased by each customer?
-select * from
-(
+select * from (
     select
     order_date,
     customer_id,
@@ -44,8 +43,7 @@ order by 2 desc
 limit 1
 
 -- 5. Which item was the most popular for each customer?
-select * from
-(
+select * from (
     select
     customer_id,
     product_name,
@@ -59,8 +57,7 @@ select * from
 where row_num = 1
 
 -- 6. Which item was purchased first by the customer after they became a member?
-select * from
-(
+select * from (
     select
     customer_id,
     product_name,
@@ -78,8 +75,7 @@ select * from
 where row_num = 1
 
 -- 7. Which item was purchased just before the customer became a member?
-select * from
-(
+select * from (
     select
     customer_id,
     product_name,join_date, s.order_date,
@@ -153,21 +149,25 @@ group by 1
 ------------------
 -- BONUS QUESTIONS
 ------------------
-
+-- Join All The Things
+-- The members column  with value N stands for NO and Y as YES.
+select *,
+case when join_date <= order_date then 'Y'else 'N' end as member
+from dannys_diner.sales s
+join dannys_diner.menu m using(product_id)
+left join  dannys_diner.members me using(customer_id)
+limit 5
 
 
 -- Rank All The Things
-with rank_all as (
+with users_details as (
     select *,
-    case when (member = 'Y') then rank() over(partition by customer_id order by order_date, member) else null end as ranks
-    from dannys_diner.sales
+    case when join_date <= order_date then 'Y' else 'N' end as member
+    from dannys_diner.sales s
+    join dannys_diner.menu m using(product_id)
+    left join  dannys_diner.members me using(customer_id)
 )
-select
-customer_id,
-order_date,
-product_name,
-price,
-member,
-case when (ranks is not null) then rank() over(partition by customer_id order by ranks) else null end as ranking
-from rank_all
-order by customer_id, order_date
+select *,
+case when member = 'Y' then (rank() over(partition by customer_id, member
+                       order by order_date)) end as ranking
+from users_details
