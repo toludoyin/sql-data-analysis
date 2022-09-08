@@ -2,7 +2,7 @@
 This repository encapsulate case study solution to [#8WeekSQLChallenge](https://8weeksqlchallenge.com/).
 
 ## 📚 Table of Contents
-* [Case study #1: Danny's Dinner](https://8weeksqlchallenge.com/case-study-1/)
+* [Case study #1: Danny's Dinner](https://8weeksqlchallenge.com/images/case-study-designs/1.png)
 
 * [Case study #2: Pizza Runner](https://8weeksqlchallenge.com/case-study-2/)
 
@@ -17,5 +17,4 @@ This repository encapsulate case study solution to [#8WeekSQLChallenge](https://
 * [Case study #7: Balanced Tree Clothing Co.](https://8weeksqlchallenge.com/case-study-7/)
 
 * [Case study #8: Fresh Segments](https://8weeksqlchallenge.com/case-study-8/)
-
 
