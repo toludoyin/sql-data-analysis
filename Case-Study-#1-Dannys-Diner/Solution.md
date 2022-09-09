@@ -26,21 +26,36 @@ from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 group by 1
 ```
+| customer_id | num_of_visit_days |
+| ----------- | ----------------- |
+| A           | 4                 |
+| B           | 6                 |
+| C           | 2                 |
+
 
 ### 3. What was the first item from the menu purchased by each customer?
 ```sql
-select * from (
+select order_date,
+customer_id,
+product_name
+    from (
     select
-    order_date,
+    order_date::date,
     customer_id,
     product_name,
-    row_number() over(partition by customer_id order by order_date) as row_num
+    row_number() over(partition by customer_id order by order_date::date) as row_num
     from dannys_diner.sales s
     join dannys_diner.menu m using(product_id)
-    order by order_date, customer_id
+    order by order_date::date, customer_id
 ) as first_order
 where row_num = 1
 ```
+
+| order_date               | customer_id | product_name |
+| ------------------------ | ----------- | ------------ |
+| 2021-01-01T00:00:00.000Z | A           | curry        |
+| 2021-01-01T00:00:00.000Z | B           | curry        |
+| 2021-01-01T00:00:00.000Z | C           | ramen        |
 
 ### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 ```sql
@@ -54,9 +69,18 @@ group by 1
 order by 2 desc
 limit 1
 ```
+
+| product_name | total_price | num_of_times_purchase |
+| ------------ | ----------- | --------------------- |
+| ramen        | 96          | 8                     |
+
+
 ### 5. Which item was the most popular for each customer?
 ```sql
-select * from (
+select customer_id,
+    product_name,
+    num_of_times_product_ordered
+    from (
     select
     customer_id,
     product_name,
@@ -69,10 +93,19 @@ select * from (
 ) as popular
 where row_num = 1
 ```
+| customer_id | product_name | num_of_times_product_ordered |
+| ----------- | ------------ | ---------------------------- |
+| A           | ramen        | 3                            |
+| B           | ramen        | 2                            |
+| C           | ramen        | 3                            |
+
 
 ### 6. Which item was purchased first by the customer after they became a member?
 ```sql
-select * from (
+select customer_id,
+    product_name,
+    num_of_times_product_ordered
+    from (
     select
     customer_id,
     product_name,
@@ -89,6 +122,11 @@ select * from (
 ) as popular
 where row_num = 1
 ```
+
+| customer_id | product_name | num_of_times_product_ordered |
+| ----------- | ------------ | ---------------------------- |
+| A           | ramen        | 1                            |
+| B           | sushi        | 1                            |
 
 ### 7. Which item was purchased just before the customer became a member?
 ```sql
@@ -108,6 +146,11 @@ select * from (
 where row_num = 1
 ```
 
+| customer_id | product_name | join_date                | order_date               | num_of_times_product_ordered |
+| ----------- | ------------ | ------------------------ | ------------------------ | ---------------------------- |
+| A           | sushi        | 2021-01-07T00:00:00.000Z | 2021-01-01T00:00:00.000Z | 1                            |
+| B           | sushi        | 2021-01-09T00:00:00.000Z | 2021-01-04T00:00:00.000Z | 1                            |
+
 ### 8. What is the total items and amount spent for each member before they became a member?
 ```sql
 select
@@ -121,6 +164,12 @@ where me.join_date > s.order_date
 group by 1
 order by 1
 ```
+*
+| customer_id | num_of_items | total_amount |
+| ----------- | ------------ | ------------ |
+| A           | 2            | 25           |
+| B           | 3            | 40           |
+
 
 ### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 ```sql
@@ -141,6 +190,12 @@ from multiplier
 group by 1
 order by 2 desc
 ```
+| customer_id | total_price |
+| ----------- | ----------- |
+| B           | 940         |
+| A           | 860         |
+| C           | 360         |
+
 
 ### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 ```sql
@@ -170,6 +225,11 @@ from (
 group by 1
 ```
 
+| customer_id | total_point |
+| ----------- | ----------- |
+| A           | 1020        |
+| B           | 320         |
+
 ### Joining All The Things
 ```sql
 -- The members column  with value N stands for NO and Y as YES.
@@ -178,8 +238,16 @@ case when join_date <= order_date then 'Y'else 'N' end as member
 from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 left join  dannys_diner.members me using(customer_id)
-limit 5
 ```
+
+| customer_id | product_id | order_date               | product_name | price | join_date                | member |
+| ----------- | ---------- | ------------------------ | ------------ | ----- | ------------------------ | ------ |
+| A           | 1          | 2021-01-01T00:00:00.000Z | sushi        | 10    | 2021-01-07T00:00:00.000Z | N      |
+| A           | 2          | 2021-01-01T00:00:00.000Z | curry        | 15    | 2021-01-07T00:00:00.000Z | N      |
+| A           | 2          | 2021-01-07T00:00:00.000Z | curry        | 15    | 2021-01-07T00:00:00.000Z | Y      |
+| A           | 3          | 2021-01-10T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      |
+| A           | 3          | 2021-01-11T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      |
+
 
 ### Rank All The Things
 ```sql
@@ -195,3 +263,23 @@ case when member = 'Y' then (rank() over(partition by customer_id, member
                        order by order_date)) end as ranking
 from users_details
 ```
+
+| customer_id | product_id | order_date               | product_name | price | join_date                | member | ranking |
+| ----------- | ---------- | ------------------------ | ------------ | ----- | ------------------------ | ------ | ------- |
+| A           | 1          | 2021-01-01T00:00:00.000Z | sushi        | 10    | 2021-01-07T00:00:00.000Z | N      |         |
+| A           | 2          | 2021-01-01T00:00:00.000Z | curry        | 15    | 2021-01-07T00:00:00.000Z | N      |         |
+| A           | 2          | 2021-01-07T00:00:00.000Z | curry        | 15    | 2021-01-07T00:00:00.000Z | Y      | 1       |
+| A           | 3          | 2021-01-10T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      | 2       |
+| A           | 3          | 2021-01-11T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      | 3       |
+| A           | 3          | 2021-01-11T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      | 3       |
+| B           | 2          | 2021-01-01T00:00:00.000Z | curry        | 15    | 2021-01-09T00:00:00.000Z | N      |         |
+| B           | 2          | 2021-01-02T00:00:00.000Z | curry        | 15    | 2021-01-09T00:00:00.000Z | N      |         |
+| B           | 1          | 2021-01-04T00:00:00.000Z | sushi        | 10    | 2021-01-09T00:00:00.000Z | N      |         |
+| B           | 1          | 2021-01-11T00:00:00.000Z | sushi        | 10    | 2021-01-09T00:00:00.000Z | Y      | 1       |
+| B           | 3          | 2021-01-16T00:00:00.000Z | ramen        | 12    | 2021-01-09T00:00:00.000Z | Y      | 2       |
+| B           | 3          | 2021-02-01T00:00:00.000Z | ramen        | 12    | 2021-01-09T00:00:00.000Z | Y      | 3       |
+| C           | 3          | 2021-01-01T00:00:00.000Z | ramen        | 12    |                          | N      |         |
+| C           | 3          | 2021-01-01T00:00:00.000Z | ramen        | 12    |                          | N      |         |
+| C           | 3          | 2021-01-07T00:00:00.000Z | ramen        | 12    |                          | N      |         |
+
+---
