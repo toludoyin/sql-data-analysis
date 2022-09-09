@@ -18,3 +18,5 @@ This repository encapsulate case study solution to [#8WeekSQLChallenge](https://
 
 * [Case study #8: Fresh Segments](https://8weeksqlchallenge.com/case-study-8/)
 
+
+
