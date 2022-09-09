@@ -163,11 +163,15 @@ group by 1
 ------------------
 -- Join All The Things
 -- The members column  with value N stands for NO and Y as YES.
-select *,
+select customer_id,
+order_date,
+product_name,
+price,
 case when join_date <= order_date then 'Y'else 'N' end as member
 from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 left join  dannys_diner.members me using(customer_id)
+order by 1,2
 
 -- Rank All The Things
 with users_details as (
@@ -177,7 +181,11 @@ with users_details as (
     join dannys_diner.menu m using(product_id)
     left join  dannys_diner.members me using(customer_id)
 )
-select *,
-case when member = 'Y' then (rank() over(partition by customer_id, member
-                       order by order_date)) end as ranking
+select customer_id,
+order_date,
+product_name,
+price,
+member,
+case when member = 'Y' then (rank() over(partition by customer_id,member
+                       order by order_date)) else NULL end as ranking
 from users_details
