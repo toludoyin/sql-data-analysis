@@ -4,10 +4,12 @@
 ```sql
 select
 distinct s.customer_id,
-sum(m.price) as total_amount,
+sum(m.price) as total_amount
 from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 group by 1
+order by 1
+
 ```
 
 ### 2. How many days has each customer visited the restaurant?
