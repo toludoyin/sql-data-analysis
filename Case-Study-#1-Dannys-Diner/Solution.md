@@ -248,7 +248,7 @@ left join  dannys_diner.members me using(customer_id)
 | A           | 3          | 2021-01-10T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      |
 | A           | 3          | 2021-01-11T00:00:00.000Z | ramen        | 12    | 2021-01-07T00:00:00.000Z | Y      |
 
-
+---
 ### Rank All The Things
 ```sql
 with users_details as (
