@@ -1,6 +1,7 @@
 1. What is the total amount each customer spent at the restaurant?
 
-```select
+```
+select
 distinct s.customer_id,
 sum(m.price) as total_amount,
 from dannys_diner.sales s
