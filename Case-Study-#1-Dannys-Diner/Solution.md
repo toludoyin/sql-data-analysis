@@ -168,7 +168,6 @@ where me.join_date > s.order_date
 group by 1
 order by 1
 ```
-*
 | customer_id | num_of_items | total_amount |
 | ----------- | ------------ | ------------ |
 | A           | 2            | 25           |
