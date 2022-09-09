@@ -9,8 +9,13 @@ from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 group by 1
 order by 1
-
 ```
+
+| customer_id | total_amount |
+| ----------- | ------------ |
+| A           | 76           |
+| B           | 74           |
+| C           | 36           |
 
 ### 2. How many days has each customer visited the restaurant?
 ```sql
