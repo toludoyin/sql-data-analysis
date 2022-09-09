@@ -6,10 +6,11 @@
 -- 1. What is the total amount each customer spent at the restaurant?
 select
 distinct s.customer_id,
-sum(m.price) as total_amount,
+sum(m.price) as total_amount
 from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 group by 1
+order by 1
 
 -- 2. How many days has each customer visited the restaurant?
 select
@@ -20,17 +21,21 @@ join dannys_diner.menu m using(product_id)
 group by 1
 
 -- 3. What was the first item from the menu purchased by each customer?
-select * from (
+select order_date,
+customer_id,
+product_name
+    from (
     select
-    order_date,
+    order_date::date,
     customer_id,
     product_name,
-    row_number() over(partition by customer_id order by order_date) as row_num
+    row_number() over(partition by customer_id order by order_date::date) as row_num
     from dannys_diner.sales s
     join dannys_diner.menu m using(product_id)
-    order by order_date, customer_id
+    order by order_date::date, customer_id
 ) as first_order
 where row_num = 1
+
 
 --4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 select
@@ -44,7 +49,10 @@ order by 2 desc
 limit 1
 
 -- 5. Which item was the most popular for each customer?
-select * from (
+select customer_id,
+    product_name,
+    num_of_times_product_ordered
+    from (
     select
     customer_id,
     product_name,
@@ -58,7 +66,10 @@ select * from (
 where row_num = 1
 
 -- 6. Which item was purchased first by the customer after they became a member?
-select * from (
+select customer_id,
+    product_name,
+    num_of_times_product_ordered
+    from (
     select
     customer_id,
     product_name,
@@ -157,7 +168,6 @@ case when join_date <= order_date then 'Y'else 'N' end as member
 from dannys_diner.sales s
 join dannys_diner.menu m using(product_id)
 left join  dannys_diner.members me using(customer_id)
-limit 5
 
 -- Rank All The Things
 with users_details as (
