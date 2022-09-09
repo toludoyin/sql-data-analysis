@@ -1,6 +1,7 @@
 ------------------------------
 -- CASE STUDY 1 DANNY'S DINNER
 ------------------------------
+--Tools used: PostgreSQL
 
 -- 1. What is the total amount each customer spent at the restaurant?
 select
