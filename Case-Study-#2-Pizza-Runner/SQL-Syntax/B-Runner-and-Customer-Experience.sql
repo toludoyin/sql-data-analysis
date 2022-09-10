@@ -126,4 +126,4 @@ count(*) as total_delivery,
 (count(case when cancellation = 0 then cancellation end))/ count(*)::float as successful_delivery_percent
 from runners
 group by 1
-order by 1
+order by 1;
