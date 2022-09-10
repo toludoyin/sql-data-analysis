@@ -130,4 +130,3 @@ count(order_id) as num_of_orders
 from pizza_runner.customer_orders
 group by 1,2
 order by 3 desc
-
