@@ -96,6 +96,7 @@ order by 1;
 
 
 -- 6. What was the average speed for each runner for each delivery and do you notice any trend for these values?
+--ANSWER: For each runner, their average speed rate(km per hour) increase after their first delivery.
 with runners as (
     select distinct runner_id, order_id,
     case when cancellation in ('null','') or cancellation is NUll then 0 else 1 end as cancellation,
