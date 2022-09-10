@@ -1,16 +1,17 @@
 -----------------------------
 --CASE STUDY A. PIZZA METRICS
 -----------------------------
+--Tools used: PostgreSQL
 
 -- 1. How many pizzas were ordered?
 select
 count(pizza_id) as total_pizzas_ordered
-from pizza_runner.customer_orders
+from pizza_runner.customer_orders;
 
 -- 2. How many unique customer orders were made?
 select
 count(distinct order_id) as unique_customers
-from pizza_runner.customer_orders
+from pizza_runner.customer_orders;
 
 -- 3. How many successful orders were delivered by each runner?
 select runner_id,
@@ -24,7 +25,7 @@ from (
 ) as successful_orders
 where cancellation2 = 0
 group by 1
-order by 1
+order by 1;
 
 -- 4. How many of each type of pizza was delivered?
 with pizza_types as (
@@ -42,7 +43,7 @@ count(order_id) as num_of_orders
 from pizza_types
 where cancellation2 = 0
 group by 1
-order by 1
+order by 1;
 
 -- 5.How many Vegetarian and Meatlovers were ordered by each customer?
 select
@@ -53,14 +54,14 @@ from pizza_runner.runner_orders ro
 join pizza_runner.customer_orders co using(order_id)
 left join pizza_runner.pizza_names pn on co.pizza_id = pn.pizza_id
 group by 1
-order by 1
+order by 1;
 
 -- 6. What was the maximum number of pizzas delivered in a single order?
 select order_id,
 count(pizza_id) as num_of_pizzas_delivered
 from pizza_runner.customer_orders
 group by 1
-order by 2 desc
+order by 2 desc;
 
 
 -- 7 and 8
@@ -111,7 +112,7 @@ made_both_change as (
 )       --8. How many pizzas were delivered that had both exclusions and extras?
 select *
 -- from made_changes       -- 7.
-from made_both_change      -- 8.
+from made_both_change;      -- 8.
 
 
 -- 9. What was the total volume of pizzas ordered for each hour of the day?
@@ -119,7 +120,7 @@ select
 extract(hour from order_time) as hour_of_day,
 count(order_id) as num_of_order
 from pizza_runner.customer_orders
-group by 1
+group by 1;
 
 
 -- 10. What was the volume of orders for each day of the week?
@@ -129,4 +130,4 @@ extract(dow from order_time) as week_day,
 count(order_id) as num_of_orders
 from pizza_runner.customer_orders
 group by 1,2
-order by 3 desc
+order by 3 desc;
