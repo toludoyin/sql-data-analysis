@@ -7,3 +7,5 @@
 In this section I applied some calculations to help Danny understand his business metrics and optimize operations using subqueries, joins, case when, CTEs, date functions and manipulation functions.
 
 * B. Runner and Customer Experience
+
+Data cleaning, manipulation with windows function, CTEs/subqueries, date and strings functions
