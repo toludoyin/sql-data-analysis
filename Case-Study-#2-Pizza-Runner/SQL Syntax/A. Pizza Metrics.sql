@@ -9,7 +9,7 @@ from pizza_runner.customer_orders
 
 -- 2. How many unique customer orders were made?
 select
-count(distinct customer_id) as unique_customers   -- A. 2
+count(distinct order_id) as unique_customers
 from pizza_runner.customer_orders
 
 -- 3. How many successful orders were delivered by each runner?
@@ -43,7 +43,6 @@ from pizza_types
 where cancellation2 = 0
 group by 1
 order by 1
-
 
 -- 5.How many Vegetarian and Meatlovers were ordered by each customer?
 select
@@ -117,7 +116,7 @@ from made_both_change      -- 8.
 
 -- 9. What was the total volume of pizzas ordered for each hour of the day?
 select
-extract(hour from order_time) as hours,
+extract(hour from order_time) as hour_of_day,
 count(order_id) as num_of_order
 from pizza_runner.customer_orders
 group by 1
@@ -126,7 +125,9 @@ group by 1
 -- 10. What was the volume of orders for each day of the week?
 select
 to_char(order_time, 'Day') as day_of_week,
--- date_trunc('week', order_time) as weeks,
-count(order_id) as num_of_order
+extract(dow from order_time) as week_day,
+count(order_id) as num_of_orders
 from pizza_runner.customer_orders
-group by 1
+group by 1,2
+order by 3 desc
+
