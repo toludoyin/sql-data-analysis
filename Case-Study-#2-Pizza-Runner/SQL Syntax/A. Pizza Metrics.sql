@@ -1,6 +1,6 @@
---------------------------
---CASE STUDY PIZZA METRICS
---------------------------
+-----------------------------
+--CASE STUDY A. PIZZA METRICS
+-----------------------------
 
 -- 1. How many pizzas were ordered?
 select
