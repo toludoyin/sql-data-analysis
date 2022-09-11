@@ -1,6 +1,6 @@
------------------------------
---CASE STUDY A. PIZZA METRICS
------------------------------
+------------------------------
+-- CASE STUDY A. PIZZA METRICS
+------------------------------
 --Tools used: PostgreSQL
 
 -- 1. How many pizzas were ordered?
