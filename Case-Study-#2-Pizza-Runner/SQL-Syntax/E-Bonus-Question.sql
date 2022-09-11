@@ -5,5 +5,4 @@ INSERT INTO pizza_runner.pizza_names
 VALUES
   (3, 'Supreme');
 
--- query
-select * from pizza_runner.pizza_names
+select * from pizza_runner.pizza_names -- query
