@@ -15,3 +15,4 @@ Handled null values(data cleaning) with windows functions, CTEs/subqueries, date
 Used ```joins```, ```nested subqueries/CTEs```, ```union all```,  string transformations(```split_part, string_agg, string_to_array, concat```), ```case when```, and ```window functions``` to answer Danny's ingredient optimization questions.
 
 * [D. Pricing and Ratings](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
+Used string transformation (```array_length```)
