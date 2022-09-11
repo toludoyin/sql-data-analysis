@@ -8,7 +8,7 @@ In this section I applied some calculations to help Danny understand his busines
 
 * [B. Runner and Customer Experience](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/B-Runner-and-Customer-Experience.sql)
 
-Handled null values with windows functions, CTEs/subqueries, date functions and string transformations(```split_part```)
+Handled null values(data cleaning) with windows functions, CTEs/subqueries, date functions and string transformations(```split_part```)
 
 * [C. Ingredient Optimisation](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/C-Ingredient-Optimisation.sql)
 
