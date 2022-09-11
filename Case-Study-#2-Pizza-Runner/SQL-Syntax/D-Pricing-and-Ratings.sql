@@ -47,6 +47,27 @@ from (
 group by 1;
 
 -- 3. The Pizza Runner team now wants to add an additional ratings system that allows customers to rate their runner, how would you design an additional table for this new dataset - generate a schema for this new table and insert your own data for ratings for each successful customer order between 1 to 5.
+-- NOTE: full schema available in new_schema.sql file
+DROP TABLE IF EXISTS ratings;
+CREATE TABLE ratings (
+"order_id" INTEGER,
+"rating" INTEGER
+);
+INSERT INTO ratings
+("order_id", "rating")
+VALUES
+('1', '1'),
+('2', '3'),
+('3', '4'),
+('4', '2'),
+('5', '3'),
+('6', '0'),
+('7', '1'),
+('8', '2'),
+('9', '0'),
+('10', '5');
+-- query
+select * from pizza_runner.ratings
 
 -- 4. Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
 -- * customer_id
@@ -68,7 +89,7 @@ with delivered_order as (
     from pizza_runner.runner_orders
     join pizza_runner.customer_orders using(order_id)
 )
-select customer_id, order_id, runner_id, order_time, pickup_time, --ratings,
+select customer_id, order_id, runner_id, order_time, pickup_time, rating,
 extract(minute from (pickup_time - order_time)) as time_bet_order_and_pickup,  duration_minute,
 avg(distance::float/(duration_minute::int/60.0)) as average_speed, total_num_of_pizzas
 from (
@@ -77,8 +98,8 @@ from (
     where cancellation =0
     group by 1,2,3,4,5,6
 ) as new_table
---join pizza_runner.order_ratings r using (order_id)
-group by 1,2,3,4,5,6,7,9
+join pizza_runner.ratings r using (order_id)
+group by 1,2,3,4,5,6,7,8,10
 order by 1;
 
 -- 5. If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
