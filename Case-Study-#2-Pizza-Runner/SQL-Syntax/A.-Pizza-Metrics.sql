@@ -63,7 +63,6 @@ from pizza_runner.customer_orders
 group by 1
 order by 2 desc;
 
-
 -- 7 and 8
 with cleaned_data as (
     select *,
@@ -114,14 +113,12 @@ select *
 -- from made_changes       -- 7.
 from made_both_change;      -- 8.
 
-
 -- 9. What was the total volume of pizzas ordered for each hour of the day?
 select
 extract(hour from order_time) as hour_of_day,
 count(order_id) as num_of_order
 from pizza_runner.customer_orders
 group by 1;
-
 
 -- 10. What was the volume of orders for each day of the week?
 select
