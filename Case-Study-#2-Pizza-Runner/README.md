@@ -8,10 +8,10 @@ In this section I applied some calculations to help Danny understand his busines
 
 * [B. Runner and Customer Experience](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/B-Runner-and-Customer-Experience.sql)
 
-Data cleaning, manipulation with windows functions, CTEs/subqueries, date and strings functions(```sql split_part```)
+Data cleaning, manipulation with windows functions, CTEs/subqueries, date and strings functions(```split_part```)
 
 * [C. Ingredient Optimisation](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/C-Ingredient-Optimisation.sql)
-Used ('''sql joins, nested subqueries/CTEs, union all, split_part, string_agg, string_to_array, concat and window function ''')to answer Danny's ingredient optimization questions.
+Used (```joins, nested subqueries/CTEs, union all, split_part, string_agg, string_to_array, concat and window function ```)to answer Danny's ingredient optimization questions.
 
 * [D. Pricing and Ratings](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
 
