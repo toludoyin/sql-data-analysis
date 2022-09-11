@@ -194,7 +194,7 @@ from (
     ) as ingd_count
     group by 1,2
 ) as pizza_ingredient
-join pizza_runner. pizza_names using(pizza_id)
+join pizza_runner. pizza_names using(pizza_id);
 
 -- 6. What is the total quantity of each ingredient used in all delivered pizzas sorted by most frequent first?
 with delivered_order as (
@@ -281,4 +281,4 @@ select
 topping_name, count(*) as ingredient_quantity
 from ingredient
 group by 1
-order by 2 desc
+order by 2 desc;
