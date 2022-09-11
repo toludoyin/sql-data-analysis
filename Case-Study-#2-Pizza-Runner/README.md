@@ -17,3 +17,7 @@ Used ```joins```, ```nested subqueries/CTEs```, ```union all```,  string transfo
 * [D. Pricing and Ratings](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
 
 Used string transformation (```array_length```).
+
+* [E. Bonus Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
+
+Added a new pizza menu called (Supreme) to table using ```INSERT INTO```.
