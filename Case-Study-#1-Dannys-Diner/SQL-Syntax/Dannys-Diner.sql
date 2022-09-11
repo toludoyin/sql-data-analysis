@@ -36,7 +36,6 @@ product_name
 ) as first_order
 where row_num = 1;
 
-
 --4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 select
 m.product_name,
