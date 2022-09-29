@@ -1,6 +1,8 @@
 # 8 Week SQL Challenge
 This repository encapsulate case study solution to [#8WeekSQLChallenge](https://8weeksqlchallenge.com/).
 
+To access each Introduction of task, Entity Relationship Diagram, Schema and Case Study Quetions. Click each of the table of content below.
+
 ## 📚 Table of Contents
 * [Case study #1: Danny's Diner](https://8weeksqlchallenge.com/images/case-study-designs/1.png)
 
