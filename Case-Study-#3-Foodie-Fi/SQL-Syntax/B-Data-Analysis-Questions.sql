@@ -52,6 +52,24 @@ from (
 ) as end_;
 
 -- 6. What is the number and percentage of customer plans after their initial free trial?
+select *,
+round(churn_after_trial::numeric/sum(churn_after_trial) over() * 100,1) as churn_after_trial_pretcg
+from (
+    select
+    plan_name,
+    count(distinct customer_id) filter (where rn = 2) as churn_after_trial
+    from (
+        select *,
+        row_number() over(partition by customer_id order by start_date) as rn
+        from foodie_fi.subscriptions
+        join foodie_fi.plans using(plan_id)
+        order by 2
+    ) as churn_rn
+    group by 1
+) as end_
+where plan_name <> 'trial'
+group by 1,2
+order by 2 desc;
 
 -- 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 with cust as (
@@ -77,9 +95,24 @@ from (
     and cc.rn = mr.max_row_num
     group by 1
 ) as end_
-group by 1,2
+group by 1,2;
 
 -- 8. How many customers have upgraded to an annual plan in 2020?
+select
+plan_name,
+count(*) as num_of_event
+from foodie_fi.subscriptions
+join foodie_fi.plans using(plan_id)
+where extract (year from start_date) = 2020 and plan_name = 'pro annual'
+group by 1
+order by 2 desc;
+
 -- 9. How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+select round(avg(annual.start_date - trial.start_date)) as avg_date
+from foodie_fi.subscriptions trial
+join foodie_fi.subscriptions annual using(customer_id)
+where trial.plan_id = 0 and annual.plan_id = 3
+
 -- 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+
 -- 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
