@@ -1,7 +1,7 @@
 # 8 Week SQL Challenge
 This repository encapsulate case study solutions to [#8WeekSQLChallenge](https://8weeksqlchallenge.com/).
 
-In this project, I took up the role of a data analyst to modify schema and answer questions from different sectors of stakeholders and team members with the end result to help them make informed strategied decisions.
+In this project, I took up the role of a data analyst to modify existing schema and answer questions related to product and sales analytics request from different sectors of stakeholders and team members with the end result to help decision makers make informed strategied decisions.
 
 To access each Introduction of task, Entity Relationship Diagram, Schema and Case Study Questions on [Data With Danny](https://8weeksqlchallenge.com/about/) website. Click each of the table of content below.
 
