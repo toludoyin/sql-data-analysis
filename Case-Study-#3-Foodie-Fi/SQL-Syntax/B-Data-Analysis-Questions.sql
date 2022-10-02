@@ -111,8 +111,40 @@ order by 2 desc;
 select round(avg(annual.start_date - trial.start_date)) as avg_date
 from foodie_fi.subscriptions trial
 join foodie_fi.subscriptions annual using(customer_id)
-where trial.plan_id = 0 and annual.plan_id = 3
+where trial.plan_id = 0 and annual.plan_id = 3;
 
 -- 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+with date_diff as (
+select customer_id,
+trial.start_date, annual.start_date,
+annual.start_date - trial.start_date as date_diff
+from foodie_fi.subscriptions trial
+join foodie_fi.subscriptions annual using(customer_id)
+where trial.plan_id = 0 and annual.plan_id = 3
+order by 4 desc
+)
+select avg_period_breakdown, round(avg(date_diff),1)
+from (
+    select *,
+    case when date_diff between 0 and 30 then '0-30'
+    when date_diff between 31 and 60 then '31-60'
+    when date_diff between 61 and 90 then '61-90'
+    when date_diff between 91 and 120 then '91-120'
+    when date_diff between 121 and 150 then '121-150'
+    when date_diff between 151 and 180 then '151-180'
+    when date_diff >= 181 then '>= 181'
+    end as avg_period_breakdown
+    from date_diff
+) as breakdown
+group by 1
+order by 2;
 
 -- 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+select customer_id, pro.plan_id, pro.start_date as pro_date,
+basic.plan_id, basic.start_date as basic_date
+from foodie_fi.subscriptions pro
+join foodie_fi.subscriptions basic using(customer_id)
+where pro.plan_id = 2 AND basic.plan_id = 1
+and pro.start_date < basic.start_date
+and extract (year from basic.start_date) = 2020
+order by 4 desc;
