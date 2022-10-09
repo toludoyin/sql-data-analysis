@@ -7,8 +7,6 @@ The Foodie-Fi team wants you to create a new payments table for the year 2020 th
 once a customer churns they will no longer make payments
 **/
 
-
-
 with sub as (
   select * from foodie_fi.plans
 join foodie_fi.subscriptions using(plan_id)
