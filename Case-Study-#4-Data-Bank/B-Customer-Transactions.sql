@@ -44,7 +44,8 @@ from (
 
 -- 5. What is the percentage of customers who increase their closing balance by more than 5%?
 with closing_bal as (
-    select customer_id, txn_month, sum(txn_amount) over(partition by customer_id order by txn_month rows between unbounded preceding and current row) as closing_bal
+    select customer_id, txn_month,
+    sum(txn_amount) over(partition by customer_id order by txn_month rows between unbounded preceding and current row) as closing_bal
     from (
         select customer_id, date_trunc('month', txn_date) as txn_month, sum(txn_status) as txn_amount
         from (
@@ -59,7 +60,8 @@ with closing_bal as (
 growth_rate as (
     select *, case when previous_month_bal is null then null
     when previous_month_bal =0 then closing_bal*100 else
-    round(((closing_bal - (previous_month_bal))/abs(previous_month_bal))*100) end as growth_rate, row_number() over(partition by customer_id order by txn_month desc) as bal_index
+    round(((closing_bal - (previous_month_bal))/abs(previous_month_bal))*100) end as growth_rate,
+    row_number() over(partition by customer_id order by txn_month desc) as bal_index
     from (
         select *, lag(closing_bal) over(partition by customer_id order by txn_month) as previous_month_bal
         from closing_bal
