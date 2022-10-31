@@ -6,12 +6,12 @@ group by 1;
 -- 2. What is the average total historical deposit counts and amounts for all customers?
 select round(avg(unique_count),1) as avg_count, round(avg(total_amount),1) as avg_total_amount
 from (
-  select
-customer_id,count(*) as unique_count, sum(txn_amount) as total_amount
-from data_bank.customer_transactions
-where txn_type = 'deposit'
-group by 1
-  ) as tmp;
+    select
+    customer_id,count(*) as unique_count, sum(txn_amount) as total_amount
+    from data_bank.customer_transactions
+    where txn_type = 'deposit'
+    group by 1
+) as tmp;
 
 -- 3. For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?
 select txn_month,
@@ -29,5 +29,17 @@ from (
 group by 1;
 
 -- 4. What is the closing balance for each customer at the end of the month?
+        select customer_id, txn_month,
+        sum(txn_amount) over(partition by customer_id order by txn_month rows between unbounded preceding and current row) as closing_bal
+        from (
+    select customer_id, date_trunc('month', txn_date) as txn_month,
+    sum(txn_status) as txn_amount
+    from (
+select *, case when txn_type ='deposit' then txn_amount else -1 * txn_amount end as txn_status
+from data_bank.customer_transactions
+order by customer_id, txn_date
+    ) tmp
+    group by 1,2
+        ) tmp2;
 
 -- 5. What is the percentage of customers who increase their closing balance by more than 5%?
