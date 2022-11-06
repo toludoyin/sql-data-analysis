@@ -40,7 +40,7 @@ from (
         order by customer_id, txn_date
     ) tmp
     group by 1,2
-) tmp2;
+) closing_bal;
 
 -- 5. What is the percentage of customers who increase their closing balance by more than 5%?
 with closing_bal as (
