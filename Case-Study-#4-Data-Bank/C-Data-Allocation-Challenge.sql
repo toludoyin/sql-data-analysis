@@ -44,3 +44,18 @@ group by 1
 order by 1;
 
 -- Option 2
+with txn_deposit as (
+    select *
+    from data_bank.customer_transactions
+    where txn_type = 'deposit'
+),
+date_series as (
+    select customer_id,
+    generate_series(first_date, last_date, '1 day') as date_series
+    from (
+        select customer_id, max(txn_date) as last_date, min(txn_date) as first_date
+        from txn_deposit
+        group by 1
+    ) min_max_series
+)
+select * from date_series
