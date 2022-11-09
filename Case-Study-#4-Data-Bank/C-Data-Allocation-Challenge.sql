@@ -94,3 +94,43 @@ group by 1
 order by 1;
 
 -- Option 3
+with txn_deposit as (
+    select *, case when txn_type = 'deposit'
+    then txn_amount else -1 * txn_amount end as txn_group
+    from data_bank.customer_transactions
+),
+date_series as (
+    select customer_id, generate_series(first_date, last_date, '1 day') as date_series
+    from (
+        select customer_id, max(txn_date) as last_date,
+        min(txn_date) as first_date
+        from txn_deposit
+        group by 1
+    ) min_max_series
+),
+customer_balance as (
+    select *, sum(txn_group) over (partition by customer_id order by date_series) as txn_sum
+    from (
+        select ds.customer_id, date_series, txn_group
+        from date_series ds
+        left join txn_deposit td on ds.customer_id = td.customer_id
+        and ds.date_series = td.txn_date
+        order by ds.customer_id, date_series
+    ) as cust_bal_count
+),
+customer_data as (
+    select customer_id, date_series, case when txn_sum < 0 then 0
+    else txn_sum end as data_store
+    from customer_balance
+)
+select
+month, round(sum(data_allocation),1) as total_allocation
+from (
+    select customer_id,
+    date_trunc('month', date_series) as month,
+    max(data_store) as data_allocation
+    from customer_data
+    group by customer_id, month
+) as allocated_data
+group by 1
+order by 1;
