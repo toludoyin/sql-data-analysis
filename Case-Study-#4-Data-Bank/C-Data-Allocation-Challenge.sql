@@ -91,4 +91,6 @@ from (
     group by customer_id,month
 ) as allocated_data
 group by 1
-order by 1
+order by 1;
+
+-- Option 3
