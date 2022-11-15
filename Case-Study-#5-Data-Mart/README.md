@@ -3,10 +3,12 @@
 
 ## Business Tasks
 
-* [1. Data Cleaning](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/1-Data-Cleansing-Steps.sql)
+[1. Data Cleaning](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/1-Data-Cleansing-Steps.sql)
+* Cleaned a schema casting a date datatype, extracting week day, month and year from date and used ```case when``` to assigned conditions to each row
+* Named the new created table in the ```data_mart```schema as ```clean_weekly_sales```
 
-* [2. Data Exploration](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/2-Data-Exploration.sql)
+[2. Data Exploration](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/2-Data-Exploration.sql)
 
-* [3. Before-After Analysis](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/3-Before-After-Analysis.sql)
+[3. Before-After Analysis](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/3-Before-After-Analysis.sql)
 
-* [4. Bonus Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/4-Bonus-Question.sql)
+[4. Bonus Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%235-Data-Mart/4-Bonus-Question.sql)
