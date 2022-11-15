@@ -35,6 +35,11 @@ group by 1,2
 order by 1;
 
 -- 5. What is the total count of transactions for each platform
+select
+    platform, count(transactions) as total_txn_count
+from data_mart.clean_weekly_sales
+group by 1;
+
 -- 6. What is the percentage of sales for Retail vs Shopify for each month?
 -- 7. What is the percentage of sales by demographic for each year in the dataset?
 -- 8. Which age_band and demographic values contribute the most to Retail sales?
