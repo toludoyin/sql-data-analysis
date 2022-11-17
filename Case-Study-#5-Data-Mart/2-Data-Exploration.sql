@@ -41,7 +41,21 @@ from data_mart.clean_weekly_sales
 group by 1;
 
 -- 6. What is the percentage of sales for Retail vs Shopify for each month?
+select
+    month_, round((retail_sales/total::numeric),2) as retail_pertcg,
+    round((shopify_sales/total::numeric),2) as shopify_pertcg, total
+from (
+    select
+        date_trunc('month', week_dates) as month_,
+        sum(case when platform = 'Retail' then sales end) as retail_sales,
+        sum(case when platform = 'Shopify' then sales end) as shopify_sales,
+        sum(sales) as total
+    from data_mart.clean_weekly_sales
+    group by 1--,2,sales
+    order by 1
+) as agg_pertcg
+order by 1;
+
 -- 7. What is the percentage of sales by demographic for each year in the dataset?
 -- 8. Which age_band and demographic values contribute the most to Retail sales?
 -- 9. Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
-
