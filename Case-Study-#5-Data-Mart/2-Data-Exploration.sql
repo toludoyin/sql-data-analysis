@@ -75,5 +75,26 @@ from (
 order by 1;
 
 -- 8. Which age_band and demographic values contribute the most to Retail sales?
+select
+    concat(demographic , '_', age_band) as dem_age, sum(sales) as total,
+    rank() over(order by sum(sales) desc) as rank_no
+from data_mart.clean_weekly_sales
+where platform = 'Retail'
+group by 1 order by 2 desc;
 
 -- 9. Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
+select
+    year_, retail_sales/retail_txn as retail_pertcg,
+    shopify_sales/shopify_txn as shopify_pertcg
+from (
+    select
+        date_trunc('year', week_dates) as year_,
+        sum(case when platform = 'Retail' then sales end) as retail_sales,
+        sum(case when platform = 'Retail' then transactions end) as retail_txn,
+        sum(case when platform = 'Shopify' then sales end) as shopify_sales,
+        sum(case when platform = 'Shopify' then transactions end) as shopify_txn
+    from data_mart.clean_weekly_sales
+    group by 1--,2,sales
+    order by 1
+) as agg_pertcg
+order by 1;
