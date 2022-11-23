@@ -51,7 +51,7 @@ from (
         sum(case when platform = 'Shopify' then sales end) as shopify_sales,
         sum(sales) as total
     from data_mart.clean_weekly_sales
-    group by 1--,2,sales
+    group by 1
     order by 1
 ) as agg_pertcg
 order by 1;
@@ -84,7 +84,7 @@ group by 1 order by 2 desc;
 
 -- 9. Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
--- Thought: using the avg_transaction column to get avgerage txn size will be a repeatition of average
+-- Thought: using the avg_transaction column to get avgerage txn size will be a repeatition of average calculation
 select
     year_, retail_sales/retail_txn as retail_pertcg,
     shopify_sales/shopify_txn as shopify_pertcg
