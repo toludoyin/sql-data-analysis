@@ -7,8 +7,27 @@ We would include all week_date values for 2020-06-15 as the start of the period 
 
 Using this analysis approach - answer the following questions:
 
-What is the total sales for the 4 weeks before and after 2020-06-15? What is the growth or reduction rate in actual values and percentage of sales?
-What about the entire 12 weeks before and after?
-How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
+1. What is the total sales for the 4 weeks before and after 2020-06-15? What is the growth or reduction rate in actual values and percentage of sales?
+2. What about the entire 12 weeks before and after?
+3. How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
 */
 
+-- 1.
+select
+    before_effect, after_effect, after_effect - before_effect as change,
+    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg
+from (
+    select
+        sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
+        sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
+	from (
+		select
+            week_dates, sales
+		from data_mart.clean_weekly_sales
+        where week_dates between '2020-06-15'::date - interval '4 week'
+        and '2020-06-15'::date + interval '3 week'
+        order by 1
+	) delta_weeks
+) as before_after
+
+-- 2.
