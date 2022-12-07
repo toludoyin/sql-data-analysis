@@ -12,6 +12,6 @@ This case study focuses on using subscription style digital data to answer impor
 
 * In this section, I applied SQL to carry out analysis on questions asked by Foodie-Fi.
 
-[C. Challenge Payment Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%233-Foodie-Fi/SQL-Syntax/C-Challenge-Payment-Question.sql) 
+[C. Challenge Payment Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%233-Foodie-Fi/SQL-Syntax/C-Challenge-Payment-Question.sql)
 
-* I used the ```array_agg``` to combine values from different rows, ```generate_series``` function to generate series of date for specific period, others include ```date_trunc```, ```lag``` and aonditional and manipulation function.
+* I used the ```array_agg``` to combine values from different rows, ```generate_series``` function to generate series of date for specific period, others include ```date_trunc```, ```lag``` and aonditional and string manipulation function.
