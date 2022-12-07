@@ -64,15 +64,21 @@ from clique_bait.events
 left join clique_bait.event_identifier using(event_type)
 left join clique_bait.page_hierarchy using(page_id)
 where product_category is not null
-group by 1
-order by 2,3 desc
+group by 1 
+order by 2,3 desc;
 
 -- What are the top 3 products by purchases?
-select page_name, count(*) as num_of_product_pages
+with purchase as (
+    select visit_id
+    from clique_bait.events
+    left join clique_bait.event_identifier using(event_type)
+    where event_name = 'Purchase'
+)
+select product_id, page_name, count(*) as num_of_purchase
 from clique_bait.events
-left join clique_bait.event_identifier using(event_type)
 left join clique_bait.page_hierarchy using(page_id)
-where event_name = 'Purchase'
-group by 1
-order by 2 desc
+join purchase using(visit_id)
+where product_id is not null
+group by 1,2
+order by 3 desc
 limit 3;
