@@ -13,7 +13,8 @@ from clique_bait.events
 join clique_bait.event_identifier using(event_type)
 left join clique_bait.page_hierarchy using(page_id)
 where event_name = 'Page View'
-group by 1 desc
+group by 1
+order by 2 desc
 limit 10;
 
 /**
