@@ -20,3 +20,17 @@ Does clicking on an impression lead to higher purchase rates?
 What is the uplift in purchase rate when comparing users who click on a campaign impression versus users who do not receive an impression? What if we compare them with users who just an impression but do not click?
 What metrics can you use to quantify the success or failure of each campaign compared to eachother?
 **/
+
+select
+user_id,
+visit_id
+min(event_time) as visit_start_time,
+max(event_time) as visit_end_time,
+count(visit_id) filter(where event_name = 'Page View') as page_views,
+count(visit_id) filter(where event_name = 'Add to Cart') as cart_adds,
+purchase,
+campaign_name,
+count(visit_id) filter(where event_name = 'Ad Impression') as
+count(visit_id) filter(where event_name = 'Ad Click') as click
+impression
+from 
