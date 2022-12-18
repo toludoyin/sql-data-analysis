@@ -21,16 +21,22 @@ What is the uplift in purchase rate when comparing users who click on a campaign
 What metrics can you use to quantify the success or failure of each campaign compared to eachother?
 **/
 
-select
+select * from
+(
+  select
 user_id,
-visit_id
+visit_id,
 min(event_time) as visit_start_time,
 max(event_time) as visit_end_time,
 count(visit_id) filter(where event_name = 'Page View') as page_views,
 count(visit_id) filter(where event_name = 'Add to Cart') as cart_adds,
-purchase,
-campaign_name,
-count(visit_id) filter(where event_name = 'Ad Impression') as
+ count(visit_id) filter(where event_name = 'Purchase') as purchase,
+count(visit_id) filter(where event_name = 'Ad Impression') as impression,
 count(visit_id) filter(where event_name = 'Ad Click') as click
-impression
-from 
+from clique_bait.events e
+left join clique_bait.users u on e.cookie_id = u.cookie_id
+and e.event_time::date >= u.start_date
+left join clique_bait.page_hierarchy ph using(page_id)
+  left join clique_bait.event_identifier ei on e.event_type = ei.event_type
+  group by 1,2
+  ) as dd
