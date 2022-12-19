@@ -40,3 +40,4 @@ left join clique_bait.page_hierarchy ph using(page_id)
   left join clique_bait.event_identifier ei on e.event_type = ei.event_type
   group by 1,2
   ) as dd
+  
