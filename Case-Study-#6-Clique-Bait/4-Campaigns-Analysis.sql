@@ -12,32 +12,26 @@ impression: count of ad impressions for each visit
 click: count of ad clicks for each visit
 (Optional column) cart_products: a comma separated text value with products added to the cart sorted by the order they were added to the cart (hint: use the sequence_number)
 Use the subsequent dataset to generate at least 5 insights for the Clique Bait team - bonus: prepare a single A4 infographic that the team can use for their management reporting sessions, be sure to emphasise the most important points from your findings.
-
-Some ideas you might want to investigate further include:
-
-Identifying users who have received impressions during each campaign period and comparing each metric with other users who did not have an impression event
-Does clicking on an impression lead to higher purchase rates?
-What is the uplift in purchase rate when comparing users who click on a campaign impression versus users who do not receive an impression? What if we compare them with users who just an impression but do not click?
-What metrics can you use to quantify the success or failure of each campaign compared to eachother?
 **/
 
-select * from
-(
+select tmp.*, campaign_name
+from (
   select
-user_id,
-visit_id,
-min(event_time) as visit_start_time,
-max(event_time) as visit_end_time,
-count(visit_id) filter(where event_name = 'Page View') as page_views,
-count(visit_id) filter(where event_name = 'Add to Cart') as cart_adds,
- count(visit_id) filter(where event_name = 'Purchase') as purchase,
-count(visit_id) filter(where event_name = 'Ad Impression') as impression,
-count(visit_id) filter(where event_name = 'Ad Click') as click
-from clique_bait.events e
-left join clique_bait.users u on e.cookie_id = u.cookie_id
-and e.event_time::date >= u.start_date
-left join clique_bait.page_hierarchy ph using(page_id)
-  left join clique_bait.event_identifier ei on e.event_type = ei.event_type
+    user_id,
+    visit_id,
+    min(event_time) as visit_start_time,
+    count(visit_id) filter(where event_name = 'Page View') as page_views,
+    count(visit_id) filter(where event_name = 'Add to Cart') as cart_adds,
+    max(case when event_name = 'Purchase' then 1 else 0 end) as purchase_flag,
+    count(visit_id) filter(where event_name = 'Ad Impression') as impressions,
+    count(visit_id) filter(where event_name = 'Ad Click') as clicks,
+    string_agg(case when event_name = 'Add to Cart' then product_id::text end, ',' order by product_id) as cart_products
+  from clique_bait.events e
+  left join clique_bait.users u on e.cookie_id = u.cookie_id
+  and e.event_time::date >= u.start_date
+  left join clique_bait.page_hierarchy ph using(page_id)
+  left join clique_bait.event_identifier ei on e.event_type = 		ei.event_type
   group by 1,2
-  ) as dd
-  
+  ) as tmp
+left join clique_bait.campaign_identifier ci on tmp.visit_start_time >= ci.start_date
+and tmp.visit_start_time <= ci.end_date
