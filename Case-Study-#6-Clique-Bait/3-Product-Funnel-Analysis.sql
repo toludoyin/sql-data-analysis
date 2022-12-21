@@ -8,14 +8,26 @@ How many times was each product purchased?
 Additionally, create another table which further aggregates the data for the above points but this time for each product category instead of individual products.
 **/
 
-select page_name, count(*) as count
-from clique_bait.events
-join clique_bait.event_identifier using(event_type)
-left join clique_bait.page_hierarchy using(page_id)
-where event_name = 'Page View'
-group by 1
-order by 2 desc
-limit 10;
+with purchase as (
+  select visit_id
+  from clique_bait.events e
+  where page_id = 13
+),
+abandoned as (
+  select visit_id
+  from clique_bait.events e
+  where page_id = 12 and page_id <> 13
+  )
+  select
+    product_id, page_name,
+    count(visit_id) filter(where event_name = 'Page View') as total_page_views,
+    count(visit_id) filter(where event_name = 'Add to Cart') as total_cart_adds,
+    count(case when visit_id in (select visit_id from purchase) and event_type not in (1,4,5) then 1 end) as product_purchase,
+ count(case when event_name = 'Add to Cart' and visit_id in (select visit_id from abandoned) then 1 end) as abandoned_add_to_cart                           from clique_bait.events e
+  left join clique_bait.page_hierarchy ph using(page_id)
+  left join clique_bait.event_identifier using(event_type)
+  where product_id is not null
+  group by 1,2;
 
 /**
 Use your 2 new output tables - answer the following questions:
