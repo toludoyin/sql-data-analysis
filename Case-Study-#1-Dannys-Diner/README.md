@@ -3,7 +3,7 @@
 
 ## 📚 Business Task
 In this session I assisted Danny to answer a few question about his customers, such as;
-* their visiting patterns, 
+* their visiting patterns
 * how much money they’ve spent
 * which menu items are their favourite. 
 
