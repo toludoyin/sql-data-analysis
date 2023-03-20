@@ -10,16 +10,16 @@ Click on each question to access the SQL query that answered the business questi
 
 [B. Runner and Customer Experience](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/B-Runner-and-Customer-Experience.sql)
 
-* Handled null values(data cleaning) along side windows functions, CTEs/subqueries, date functions and string transformations(```split_part```).
+* Handled null values(data cleaning) along side used windows functions, CTEs/subqueries, date functions and string transformations(```split_part```).
 
 [C. Ingredient Optimisation](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/C-Ingredient-Optimisation.sql)
 
-* Used ```joins```, ```nested subqueries/CTEs```, ```union all```,  string transformations(```split_part, string_agg, string_to_array, concat```), ```case when```, and ```window functions``` to answer Danny's ingredient optimization questions.
+* Used ```joins```, ```nested subqueries/CTEs```, ```union all```,  string transformations(```split_part, string_agg, string_to_array, concat```), ```case when```, and ```window functions``` to answer Danny's ingredient optimization questions in this section.
 
 [D. Pricing and Ratings](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
 
-* Used string transformation (```array_length```) function to answer question.
+* Applied string transformation (```array_length```) function to answer the business questions.
 
 [E. Bonus Question](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%232-Pizza-Runner/SQL-Syntax/D.%20Pricing-and-Ratings.sql)
 
-* Added a new pizza menu called (Supreme) to table using ```INSERT INTO```.
+* Added a new pizza menu called (Supreme) to table using the `INSERT INTO` function.
