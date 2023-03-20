@@ -10,4 +10,4 @@ In this session I assisted Danny to answer a few question about his customers, s
 These answers will help Danny to have a deeper connection with his customers and deliver a better and more personalised experience for his loyal customers.
 
 ## Motive 
-He plans on using these insights to help him decide whether he should expand the existing customer loyalty program.
+Danny plans on using these insights to help him decide whether he should expand the existing customer loyalty program.
