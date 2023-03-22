@@ -2,7 +2,6 @@
 ALTER TABLE fresh_segments.interest_metrics
 ALTER COLUMN month_year TYPE DATE
 USING month_year::DATE
-
 -- What is count of records in the fresh_segments.interest_metrics for each month_year value sorted in chronological order (earliest to latest) with the null values appearing first?
 -- What do you think we should do with these null values in the fresh_segments.interest_metrics
 -- How many interest_id values exist in the fresh_segments.interest_metrics table but not in the fresh_segments.interest_map table? What about the other way around?
