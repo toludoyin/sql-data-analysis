@@ -34,4 +34,4 @@ FROM (
   GROUP BY 1,2
 ) AS tmp
 LEFT JOIN clique_bait.campaign_identifier ci ON tmp.visit_start_time >= ci.start_date
-    AND tmp.visit_start_time <= ci.end_date
+          AND tmp.visit_start_time <= ci.end_date
