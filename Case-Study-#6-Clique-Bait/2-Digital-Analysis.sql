@@ -1,84 +1,95 @@
 -- Using the available datasets - answer the following questions using a single query for each one:
 
 -- How many users are there?
-select count(distinct user_id) from clique_bait.users;
+SELECT COUNT(DISTINCT user_id)
+FROM clique_bait.users;
 
 -- How many cookies does each user have on average?
-select user_id, round(avg(no_of_cookies)) as avg_cookie
-from (
-    select distinct user_id, count(cookie_id) as no_of_cookies
-    from clique_bait.users
-    group by 1
-) as cookies
-group by 1
-order by 1;
+SELECT
+    user_id,
+    ROUND(AVG(no_of_cookies)) AS avg_cookie
+FROM (
+    SELECT
+        DISTINCT user_id,
+        COUNT(cookie_id) AS no_of_cookies
+    FROM clique_bait.users
+    GROUP BY 1
+) AS cookies
+GROUP BY 1
+ORDER BY 1;
 
 -- What is the unique number of visits by all users per month?
-select
-    date_trunc('month', event_time) as event_month, user_id,
-    count(distinct visit_id) as num_of_visit
-from clique_bait.events
-left join clique_bait.users using(cookie_id)
-group by 1,2;
+SELECT
+    DATE_TRUNC('month', event_time) AS event_month, user_id,
+    COUNT(DISTINCT visit_id) AS num_of_visit
+FROM clique_bait.events
+LEFT JOIN clique_bait.users USING(cookie_id)
+GROUP BY 1,2;
 
 -- What is the number of events for each event type?
-select event_name, count(event_type) as num_event_type
-from clique_bait.events
-left join clique_bait.event_identifier using(event_type)
-group by 1
-order by 2 desc;
+SELECT
+    event_name,
+    COUNT(event_type) AS num_event_type
+FROM clique_bait.events
+LEFT JOIN clique_bait.event_identifier USING(event_type)
+GROUP BY 1
+ORDER BY 2 DESC;
 
 -- What is the percentage of visits which have a purchase event?
-select
-    count(event_type) filter(where event_name = 'Purchase') as purchase_event,
-    count(event_type) as total_event_type,
-    round((count(event_type) filter(where event_name = 'Purchase')/count(event_type)::numeric)*100,2) as pertcg
-from clique_bait.events
-left join clique_bait.event_identifier using(event_type);
+SELECT
+    COUNT(event_type) FILTER(WHERE event_name = 'Purchase') AS purchase_event,
+    COUNT(event_type) AS total_event_type,
+    round((COUNT(event_type) FILTER(WHERE event_name = 'Purchase')/COUNT(event_type)::NUMERIC)*100,2) AS pertcg
+FROM clique_bait.events
+LEFT JOIN clique_bait.event_identifier USING(event_type);
 
 -- What is the percentage of visits which view the checkout page but do not have a purchase event?
-select
-    count(distinct visit_id) filter(where page_name='Checkout' and event_name != 'Purchase') as checkout_no_purchase,
-    count(distinct visit_id) as total_visit,
-    round((count(distinct visit_id) filter(where page_name='Checkout' and event_name != 'Purchase')/count(distinct visit_id)::numeric)*100,2) as pertcg
-from clique_bait.events
-left join clique_bait.event_identifier using(event_type)
-left join clique_bait.page_hierarchy using(page_id);
+SELECT
+    COUNT(DISTINCT visit_id) FILTER(WHERE page_name='Checkout' and event_name != 'Purchase') AS checkout_no_purchase,
+    COUNT(DISTINCT visit_id) AS total_visit,
+    ROUND((COUNT(DISTINCT visit_id) FILTER(WHERE page_name='Checkout' AND event_name != 'Purchase')/COUNT(DISTINCT visit_id)::NUMERIC)*100,2) AS pertcg
+FROM clique_bait.events
+LEFT JOIN clique_bait.event_identifier USING(event_type)
+LEFT JOIN clique_bait.page_hierarchy USING(page_id);
 
 -- What are the top 3 pages by number of views?
-select page_name, count(*) as num_of_views
-from clique_bait.events
-left join clique_bait.event_identifier using(event_type)
-left join clique_bait.page_hierarchy using(page_id)
-where event_name = 'Page View'
-group by 1
-order by 2 desc
-limit 3;
+SELECT
+    page_name,
+    COUNT(*) AS num_of_views
+FROM clique_bait.events
+LEFT JOIN clique_bait.event_identifier USING(event_type)
+LEFT JOIN clique_bait.page_hierarchy USING(page_id)
+WHERE event_name = 'Page View'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 3;
 
 -- What is the number of views and cart adds for each product category?
-select
+SELECT
     product_category,
-    count(*) filter(where event_name = 'Page View') as page_veiws,
-    count(*) filter(where event_name = 'Add to Cart') as add_cart
-from clique_bait.events
-left join clique_bait.event_identifier using(event_type)
-left join clique_bait.page_hierarchy using(page_id)
-where product_category is not null
-group by 1 
-order by 2,3 desc;
+    COUNT(*) FILTER(WHERE event_name = 'Page View') AS page_veiws,
+    COUNT(*) FILTER(WHERE event_name = 'Add to Cart') AS add_cart
+FROM clique_bait.events
+LEFT JOIN clique_bait.event_identifier USING(event_type)
+LEFT JOIN clique_bait.page_hierarchy USING(page_id)
+WHERE product_category IS NOT NULL
+GROUP BY 1
+ORDER BY 2,3 DESC;
 
 -- What are the top 3 products by purchases?
-with purchase as (
-    select visit_id
-    from clique_bait.events
-    left join clique_bait.event_identifier using(event_type)
-    where event_name = 'Purchase'
+WITH purchase AS (
+    SELECT visit_id
+    FROM clique_bait.events
+    LEFT JOIN clique_bait.event_identifier USING(event_type)
+    WHERE event_name = 'Purchase'
 )
-select product_id, page_name, count(*) as num_of_purchase
-from clique_bait.events
-left join clique_bait.page_hierarchy using(page_id)
-join purchase using(visit_id)
-where product_id is not null
-group by 1,2
-order by 3 desc
-limit 3;
+SELECT
+    product_id, page_name,
+    COUNT(*) AS num_of_purchase
+FROM clique_bait.events
+LEFT JOIN clique_bait.page_hierarchy USING(page_id)
+JOIN purchase USING(visit_id)
+WHERE product_id IS NOT NULL
+GROUP BY 1,2
+ORDER BY 3 DESC
+LIMIT 3;
