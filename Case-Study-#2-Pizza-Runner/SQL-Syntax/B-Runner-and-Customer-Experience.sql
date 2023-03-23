@@ -4,7 +4,7 @@
 
 -- 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 SELECT
-    date_trunc('week', registration_date) AS registratin_week,
+    DATE_TRUNC('week', registration_date) AS registratin_week,
     CONCAT('Week ', TO_CHAR(registration_date, 'ww')) AS week_no,
     COUNT(DISTINCT runner_id) AS num_of_runners
 FROM pizza_runner.runners
