@@ -1,5 +1,3 @@
--- Using the available datasets - answer the following questions using a single query for each one:
-
 -- How many users are there?
 SELECT
     COUNT(DISTINCT user_id) AS num_of_users
