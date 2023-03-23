@@ -14,24 +14,24 @@ click: count of ad clicks for each visit
 Use the subsequent dataset to generate at least 5 insights for the Clique Bait team - bonus: prepare a single A4 infographic that the team can use for their management reporting sessions, be sure to emphasise the most important points from your findings.
 **/
 
-select tmp.*, campaign_name
-from (
-  select
-    user_id,
-    visit_id,
-    min(event_time) as visit_start_time,
-    count(visit_id) filter(where event_name = 'Page View') as page_views,
-    count(visit_id) filter(where event_name = 'Add to Cart') as cart_adds,
-    max(case when event_name = 'Purchase' then 1 else 0 end) as purchase_flag,
-    count(visit_id) filter(where event_name = 'Ad Impression') as impressions,
-    count(visit_id) filter(where event_name = 'Ad Click') as clicks,
-    string_agg(case when event_name = 'Add to Cart' then product_id::text end, ',' order by product_id) as cart_products
-  from clique_bait.events e
-  left join clique_bait.users u on e.cookie_id = u.cookie_id
-  and e.event_time::date >= u.start_date
-  left join clique_bait.page_hierarchy ph using(page_id)
-  left join clique_bait.event_identifier ei on e.event_type = 		ei.event_type
-  group by 1,2
-  ) as tmp
-left join clique_bait.campaign_identifier ci on tmp.visit_start_time >= ci.start_date
-and tmp.visit_start_time <= ci.end_date
+SELECT tmp.*, campaign_name
+FROM (
+    SELECT
+        user_id,
+        visit_id,
+        MIN(event_time) AS visit_start_time,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Page View') AS page_views,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Add to Cart') AS cart_adds,
+        MAX(CASE WHEN event_name = 'Purchase' THEN 1 ELSE 0 end) AS purchase_flag,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Ad Impression') AS impressions,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Ad Click') AS clicks,
+        STRING_AGG(CASE WHEN event_name = 'Add to Cart' THEN product_id::TEXT END, ',' ORDER BY product_id) AS cart_products
+  FROM clique_bait.events e
+  LEFT JOIN clique_bait.users u ON e.cookie_id = u.cookie_id
+            AND e.event_time::DATE >= u.start_date
+  LEFT JOIN clique_bait.page_hierarchy ph USING(page_id)
+  LEFT JOIN clique_bait.event_identifier ei ON e.event_type = ei.event_type
+  GROUP BY 1,2
+) AS tmp
+LEFT JOIN clique_bait.campaign_identifier ci ON tmp.visit_start_time >= ci.start_date
+    AND tmp.visit_start_time <= ci.end_date
