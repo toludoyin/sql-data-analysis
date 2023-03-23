@@ -1,7 +1,8 @@
 -- Using the available datasets - answer the following questions using a single query for each one:
 
 -- How many users are there?
-SELECT COUNT(DISTINCT user_id)
+SELECT
+    COUNT(DISTINCT user_id) AS num_of_users
 FROM clique_bait.users;
 
 -- How many cookies does each user have on average?
@@ -39,13 +40,13 @@ ORDER BY 2 DESC;
 SELECT
     COUNT(event_type) FILTER(WHERE event_name = 'Purchase') AS purchase_event,
     COUNT(event_type) AS total_event_type,
-    round((COUNT(event_type) FILTER(WHERE event_name = 'Purchase')/COUNT(event_type)::NUMERIC)*100,2) AS pertcg
+    ROUND((COUNT(event_type) FILTER(WHERE event_name = 'Purchase')/COUNT(event_type)::NUMERIC)*100,2) AS pertcg
 FROM clique_bait.events
 LEFT JOIN clique_bait.event_identifier USING(event_type);
 
 -- What is the percentage of visits which view the checkout page but do not have a purchase event?
 SELECT
-    COUNT(DISTINCT visit_id) FILTER(WHERE page_name='Checkout' and event_name != 'Purchase') AS checkout_no_purchase,
+    COUNT(DISTINCT visit_id) FILTER(WHERE page_name='Checkout' AND event_name != 'Purchase') AS checkout_no_purchase,
     COUNT(DISTINCT visit_id) AS total_visit,
     ROUND((COUNT(DISTINCT visit_id) FILTER(WHERE page_name='Checkout' AND event_name != 'Purchase')/COUNT(DISTINCT visit_id)::NUMERIC)*100,2) AS pertcg
 FROM clique_bait.events
