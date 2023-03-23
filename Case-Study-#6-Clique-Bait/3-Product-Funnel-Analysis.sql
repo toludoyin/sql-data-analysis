@@ -8,26 +8,34 @@ How many times was each product purchased?
 Additionally, create another table which further aggregates the data for the above points but this time for each product category instead of individual products.
 **/
 
-with purchase as (
-  select visit_id
-  from clique_bait.events e
-  where page_id = 13
+WITH purchase AS (
+    SELECT visit_id
+    FROM clique_bait.events e
+    WHERE page_id = 13
 ),
-abandoned as (
-  select visit_id
-  from clique_bait.events e
-  where page_id = 12 and page_id <> 13
-  )
-  select
+abandoned AS (
+    SELECT visit_id
+    FROM clique_bait.events e
+    WHERE page_id = 12
+    AND page_id <> 13
+)
+SELECT
     product_id, page_name,
-    count(visit_id) filter(where event_name = 'Page View') as total_page_views,
-    count(visit_id) filter(where event_name = 'Add to Cart') as total_cart_adds,
-    count(case when visit_id in (select visit_id from purchase) and event_type not in (1,4,5) then 1 end) as product_purchase,
- count(case when event_name = 'Add to Cart' and visit_id in (select visit_id from abandoned) then 1 end) as abandoned_add_to_cart                           from clique_bait.events e
-  left join clique_bait.page_hierarchy ph using(page_id)
-  left join clique_bait.event_identifier using(event_type)
-  where product_id is not null
-  group by 1,2;
+    COUNT(visit_id) FILTER(WHERE event_name = 'Page View') AS total_page_views,
+    COUNT(visit_id) FILTER(WHERE event_name = 'Add to Cart') AS total_cart_adds,
+    COUNT(CASE WHEN visit_id IN (
+        SELECT visit_id
+        FROM purchase)
+    AND event_type NOT IN (1,4,5) THEN 1 END) AS product_purchase,
+    COUNT(CASE WHEN event_name = 'Add to Cart' AND visit_id IN (
+        SELECT visit_id
+        FROM abandoned
+    ) THEN 1 END) AS abandoned_add_to_cart
+FROM clique_bait.events e
+LEFT JOIN clique_bait.page_hierarchy ph USING(page_id)
+LEFT JOIN clique_bait.event_identifier USING(event_type)
+WHERE product_id IS NOT NULL
+GROUP BY 1,2;
 
 /**
 Use your 2 new output tables - answer the following questions:
@@ -42,37 +50,44 @@ Answers:
 Lobster: had the most veiws
 **/
 
-with purchase as (
-    select visit_id
-    from clique_bait.events e
-    where page_id = 13
+WITH purchase AS (
+    SELECT visit_id
+    FROM clique_bait.events e
+    WHERE page_id = 13
 ),
-abandoned as (
-    select visit_id
-    from clique_bait.events e
-    where page_id = 12 and page_id <> 13
+abandoned AS (
+    SELECT visit_id
+    FROM clique_bait.events e
+    WHERE page_id = 12
+    AND page_id <> 13
 ),
-summary as (
-    select
-    product_id, page_name,
-    count(visit_id) filter(where event_name = 'Page View') as total_page_views,
-    count(visit_id) filter(where event_name = 'Add to Cart') as total_cart_adds,
-    count(case when visit_id in (select visit_id from purchase) and event_type not in (1,4,5) then 1 end) as product_purchase,
-    count(case when event_name = 'Add to Cart' and visit_id in (select visit_id from abandoned) then 1 end) as abandoned_add_to_cart
-    from clique_bait.events e
-    left join clique_bait.page_hierarchy ph using(page_id)
-    left join clique_bait.event_identifier using(event_type)
-    where product_id is not null
-    group by 1,2
+summary AS (
+    SELECT
+        product_id, page_name,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Page View') AS total_page_views,
+        COUNT(visit_id) FILTER(WHERE event_name = 'Add to Cart') AS total_cart_adds,
+        COUNT(CASE WHEN visit_id IN (
+            SELECT visit_id
+            FROM purchase
+        ) AND event_type NOT IN (1,4,5) THEN 1 END) AS product_purchase,
+        COUNT(CASE WHEN event_name = 'Add to Cart' AND visit_id IN (
+            SELECT visit_id
+            FROM abandoned
+        ) THEN 1 END) AS abandoned_add_to_cart
+    FROM clique_bait.events e
+    LEFT JOIN clique_bait.page_hierarchy ph USING(page_id)
+    LEFT JOIN clique_bait.event_identifier USING(event_type)
+    WHERE product_id IS NOT NULL
+    GROUP BY 1,2
 )
-select
-    round(avg(cart_add_to_views),2) as avg_views_to_cart,
-    round(avg(purchase_from_add_to_cart),2) as avg_views_to_cart
-    from (
-        select *,
-        round((total_cart_adds / total_page_views::numeric)*100,2) as cart_add_to_views,
-        round((product_purchase / total_page_views::numeric)*100,2) as purchase_to_views,
-        (product_purchase / total_cart_adds::numeric)*100 as purchase_from_add_to_cart
-        from summary
-        order by 7 desc
-) as tmp;
+SELECT
+    ROUND(AVG(cart_add_to_views),2) AS avg_views_to_cart,
+    ROUND(AVG(purchase_from_add_to_cart),2) AS avg_views_to_cart
+FROM (
+    SELECT *,
+        ROUND((total_cart_adds / total_page_views::NUMERIC)*100,2) AS cart_add_to_views,
+        ROUND((product_purchase / total_page_views::NUMERIC)*100,2) AS purchase_to_views,
+        (product_purchase / total_cart_adds::NUMERIC)*100 AS purchase_from_add_to_cart
+    FROM summary
+    ORDER BY 7 DESC
+) AS tmp;
