@@ -122,7 +122,7 @@ WITH multiplier AS (
         s.customer_id,
         m.product_name,
         m.price,
-    CASE WHEN product_id = 1 THEN m.price*20 ELSE m.price*10 END AS points
+        CASE WHEN product_id = 1 THEN m.price*20 ELSE m.price*10 END AS points
     FROM dannys_diner.menu m
     JOIN dannys_diner.sales s USING(product_id)
 )
@@ -136,10 +136,10 @@ ORDER BY 2 DESC;
 -- 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 WITH earnings AS (
     SELECT
-    customer_id,
-    s.product_id,
-    s.order_date,
-    m.join_date
+        customer_id,
+        s.product_id,
+        s.order_date,
+        m.join_date
     FROM dannys_diner.sales s
     JOIN dannys_diner.members m USING(customer_id)
     WHERE m.join_date <= s.order_date
@@ -169,7 +169,7 @@ SELECT
     order_date,
     product_name,
     price,
-CASE WHEN join_date <= order_date THEN 'Y' ELSE 'N' END AS member
+    CASE WHEN join_date <= order_date THEN 'Y' ELSE 'N' END AS member
 FROM dannys_diner.sales s
 JOIN dannys_diner.menu m USING(product_id)
 LEFT JOIN dannys_diner.members me USING(customer_id)
@@ -178,7 +178,7 @@ ORDER BY 1,2;
 -- Rank All The Things
 WITH users_details AS (
     SELECT *,
-    CASE WHEN join_date <= order_date THEN 'Y' ELSE 'N' END AS member
+        CASE WHEN join_date <= order_date THEN 'Y' ELSE 'N' END AS member
     FROM dannys_diner.sales s
     JOIN dannys_diner.menu m USING(product_id)
     LEFT JOIN dannys_diner.members me USING(customer_id)
