@@ -7,81 +7,85 @@ The Foodie-Fi team wants you to create a new payments table for the year 2020 th
 once a customer churns they will no longer make payments
 **/
 
-with sub as (
-select * from foodie_fi.plans
-join foodie_fi.subscriptions using(plan_id)
-where plan_name <> 'trial'
+WITH sub AS (
+SELECT * FROM foodie_fi.plans
+JOIN foodie_fi.subscriptions USING(plan_id)
+WHERE plan_name <> 'trial'
 ),
-customer_journey as (
-select
-customer_id, array_agg(plan_id) as plan_journey,
-array_agg(start_date) as sub_date
-from sub
-group by 1
+customer_journey AS (
+SELECT
+    customer_id, ARRAY_AGG(plan_id) AS plan_journey,
+    ARRAY_AGG(start_date) AS sub_date
+FROM sub
+GROUP BY 1
 ),
-payment as (
+payment AS (
 -- 1st and 2nd subscripion plan
-select
-customer_id, plan_journey, sub_date, min(series) as series
-from (
-    select *,
-    generate_series(sub_date[1], coalesce(sub_date[2]-interval '1 day', '2020-12-31'), '1 month') as series
-    from  customer_journey
-    ) as tmp
-where plan_journey[1]= 3
-group by 1,2,3
-union all
-select *,
-generate_series(sub_date[1], coalesce(sub_date[2]-interval '1 day', '2020-12-31'), '1 month') as series
-from  customer_journey
-where plan_journey[1] <> 3
+SELECT
+    customer_id, plan_journey, sub_date, min(series) AS series
+FROM (
+    SELECT *,
+    GENERATE_SERIES(sub_date[1], COALESCE(sub_date[2]-interval '1 day', '2020-12-31'), '1 month') AS series
+    FROM customer_journey
+) AS tmp
+WHERE plan_journey[1]= 3
+GROUP BY 1,2,3
 
-union all
+UNION ALL
+
+SELECT *,
+    GENERATE_SERIES(sub_date[1], COALESCE(sub_date[2]-interval '1 day', '2020-12-31'), '1 month') AS series
+FROM customer_journey
+WHERE plan_journey[1] <> 3
+
+UNION ALL
 
  -- 2nd and 3rd subscription plan
-select *,
-generate_series(sub_date[2], coalesce(sub_date[3]-interval '1 day', '2020-12-31'), '1 month') as series
-from  customer_journey
-where plan_journey in (array[1,2,3], array[1,3,4], array[2,3], array[1,3])
-union all
-select *,
-generate_series(sub_date[2], coalesce(sub_date[3]-interval '1 day', case when plan_journey[2] <>4 then '2020-12-31'::date end), '1 month') as series
-from  customer_journey
-where plan_journey not in (array[1,2,3], array[1,3,4], array[2,3], array[1,3])
-order by 1
+SELECT *,
+    GENERATE_SERIES(sub_date[2], COALESCE(sub_date[3] - interval '1 day', '2020-12-31'), '1 month') AS series
+FROM  customer_journey
+WHERE plan_journey IN (ARRAY[1,2,3], ARRAY[1,3,4], ARRAY[2,3], ARRAY[1,3])
+
+UNION ALL
+
+SELECT *,
+    GENERATE_SERIES(sub_date[2], COALESCE(sub_date[3]-interval '1 day', CASE WHEN plan_journey[2] <>4 THEN '2020-12-31'::DATE END), '1 month') AS series
+FROM  customer_journey
+WHERE plan_journey NOT IN (ARRAY[1,2,3], ARRAY[1,3,4], ARRAY[2,3], ARRAY[1,3])
+ORDER BY 1
 ),
-update_payment as (
-select *,
-case when plan_journey in (array[1,2], array[1,3])
-and array[prev_plan, plan_id] in (array[1,2], array[1,3])
-and date_trunc('month', payment_date) = date_trunc('month', prev_payment_date)
-then amount-lag_amount else amount end as update_amount
-from (
-    select *,
-    lag(amount) over (partition by customer_id order by payment_date) as lag_amount,
-    lag(payment_date) over (partition by customer_id order by payment_date) as prev_payment_date,
-    lag(plan_id) over (partition by customer_id order by payment_date) as prev_plan
-    from (
-        select customer_id,
-        max(plan_id) over (partition by customer_id order by series) as plan_id,
-        max(pp.plan_name) over (partition by customer_id order by series) as plan_name,
+update_payment AS (
+SELECT *,
+    CASE WHEN plan_journey IN (ARRAY[1,2],ARRAY[1,3])
+    AND ARRAY[prev_plan, plan_id] IN (ARRAY[1,2], ARRAY[1,3])
+    AND DATE_TRUNC('MONTH', payment_date) = DATE_TRUNC('MONTH', prev_payment_date)
+    THEN amount - lag_amount ELSE amount END AS update_amount
+FROM (
+    SELECT *,
+        LAG(amount) OVER (PARTITION BY customer_id ORDER BY payment_date) AS lag_amount,
+        LAG(payment_date) OVER (PARTITION BY customer_id ORDER BY payment_date) AS prev_payment_date,
+        LAG(plan_id) OVER (PARTITION BY customer_id ORDER BY payment_date) AS prev_plan
+    FROM (
+        SELECT customer_id,
+        MAX(plan_id) OVER (PARTITION BY customer_id ORDER BY series) AS plan_id,
+        MAX(pp.plan_name) OVER (PARTITION BY customer_id ORDER BY series) AS plan_name,
         series as payment_date,
-        max(price) over (partition by customer_id order by series) as amount,
-        row_number() over (partition by customer_id order by series) as payment_order, plan_journey, sub_date
-        from (
-            select
-            p.customer_id, s.plan_id, p.plan_journey, p.series, p.sub_date
-            from payment p
-            left join sub s using(customer_id)
-            where plan_journey[1] <> 4
-            and p.series = s.start_date
-            and extract(year from series)=2020
-            order by 1,4
-            ) as tmp
-        left join foodie_fi.plans pp using(plan_id)
-        ) as tmp
-    ) as tmp
+        MAX(price) OVER (PARTITION BY customer_id ORDER BY series) AS amount,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY series) AS payment_order, plan_journey, sub_date
+        FROM (
+            SELECT
+                p.customer_id, s.plan_id, p.plan_journey, p.series, p.sub_date
+            FROM payment p
+            LEFT JOIN sub s USING(customer_id)
+            WHERE plan_journey[1] <> 4
+            AND p.series = s.start_date
+            AND EXTRACT(year FROM series)=2020
+            ORDER BY 1,4
+            ) AS tmp
+        LEFT JOIN foodie_fi.plans pp USING (plan_id)
+        ) AS tmp
+    ) AS tmp
 )
-select
-customer_id, plan_id, plan_name, payment_date, amount, payment_order
-from update_payment;
+SELECT
+    customer_id, plan_id, plan_name, payment_date, amount, payment_order
+FROM update_payment;
