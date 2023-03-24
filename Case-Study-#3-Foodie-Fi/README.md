@@ -1,5 +1,5 @@
 ## 🍕 Case Study #3: Foodie-Fi
-<img src="https://8weeksqlchallenge.com/images/case-study-designs/3.png" width="500" height="500">
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/3.png" width="350" height="350">
 
 ## Business Tasks
 This case study focuses on using subscription style digital data to answer important business questions.
