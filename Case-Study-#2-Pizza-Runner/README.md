@@ -1,5 +1,5 @@
 ## 🍕 Case Study #2: Pizza Runner
-<img src="https://8weeksqlchallenge.com/images/case-study-designs/2.png" width="300" height="300">
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/2.png" width="350" height="350">
 
 ## Business Tasks
 Click on each question to access the SQL query that answered the business questions in the SQL-Syntax folder.
