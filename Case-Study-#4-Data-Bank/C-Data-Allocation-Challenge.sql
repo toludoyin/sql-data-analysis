@@ -13,124 +13,138 @@ Using all of the data available - how much data would have been required for eac
 **/
 
 -- Option 1
-with closing_bal as (
-     select customer_id, txn_month,
-     sum(txn_amount) over(partition by customer_id order by txn_month rows between unbounded preceding and current row) as closing_bal
-     from (
-        select customer_id, date_trunc('month', txn_date) as txn_month, sum(txn_status) as txn_amount
-        from (
-            select *,
-            case when txn_type ='deposit' then txn_amount else -1*txn_amount end as txn_status
-            from data_bank.customer_transactions
-            order by customer_id, txn_date
+WITH closing_bal AS (
+    SELECT
+        customer_id, txn_month,
+        SUM(txn_amount) OVER(PARTITION BY customer_id ORDER BY txn_month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS closing_bal
+    FROM (
+        SELECT
+            customer_id, DATE_TRUNC('MONTH', txn_date) AS txn_month,
+            SUM(txn_status) AS txn_amount
+        FROM (
+            SELECT *,
+                CASE WHEN txn_type ='deposit' THEN txn_amount ELSE -1*txn_amount END AS txn_status
+            FROM data_bank.customer_transactions
+            ORDER BY customer_id, txn_date
         ) deposit_txn
-        group by 1,2
+        GROUP BY 1,2
     ) total_deposit
 ),
-data_stores as (
-    select *, case when previous_month_bal < 0 then 0 else previous_month_bal end as data_store,
-    case when previous_month_bal is null then null
-    when previous_month_bal =0 then closing_bal*100 else
-    round(((closing_bal - (previous_month_bal))/abs(previous_month_bal))*100) end as growth_rate,
-    row_number() over(partition by customer_id order by txn_month desc) as bal_index
-    from (
-        select *, lag(closing_bal) over(partition by customer_id order by txn_month) as previous_month_bal
-        from closing_bal
-        )previous_bal
+data_stores AS (
+    SELECT *,
+        CASE WHEN previous_month_bal < 0 THEN 0 ELSE previous_month_bal END AS data_store,
+        CASE WHEN previous_month_bal IS NULL THEN NULL
+        WHEN previous_month_bal =0 THEN closing_bal*100 ELSE
+        ROUND(((closing_bal - (previous_month_bal)) / ABS(previous_month_bal))*100) END AS growth_rate,
+        ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY txn_month DESC) AS bal_index
+    FROM (
+        SELECT *,
+            LAG(closing_bal) OVER(PARTITION BY customer_id ORDER BY txn_month) AS previous_month_bal
+        FROM closing_bal
+        ) previous_bal
 )
-select txn_month, sum(data_store) as data_storage
-from data_stores
-group by 1
-order by 1;
+SELECT txn_month, SUM(data_store) AS data_storage
+FROM data_stores
+GROUP BY 1
+ORDER BY 1;
 
 -- Option 2
-with txn_deposit as (
-    select *, case when txn_type = 'deposit'
-    then txn_amount else -1 * txn_amount end as txn_group
-    from data_bank.customer_transactions
+WITH txn_deposit AS (
+    SELECT *,
+        CASE WHEN txn_type = 'deposit' THEN txn_amount ELSE -1 * txn_amount END AS txn_group
+    FROM data_bank.customer_transactions
 ),
-date_series as (
-    select customer_id, generate_series(first_date, last_date, '1 day') as date_series
-    from (
-        select customer_id, max(txn_date) as last_date,
-        min(txn_date) as first_date
-        from txn_deposit
-        group by 1
+date_series AS (
+    SELECT
+        customer_id, generate_series(first_date, last_date, '1 day') AS date_series
+    FROM (
+        SELECT
+            customer_id, MAX(txn_date) AS last_date,
+            MIN(txn_date) AS first_date
+        FROM txn_deposit
+        GROUP BY 1
     ) min_max_series
 ),
-customer_balance as (
-    select *, sum(txn_group) over (partition by customer_id order by date_series) as txn_sum
-    from (
-        select ds.customer_id, date_series, txn_group,
-        count(txn_group) over (partition by ds.customer_id order by date_series) as txn_count
-        from date_series ds
-        left join txn_deposit td on ds.customer_id = td.customer_id
-        and ds.date_series = td.txn_date
-        order by ds.customer_id, date_series
-    ) as cust_bal_count
+customer_balance AS (
+    SELECT *,
+        SUM(txn_group) OVER(PARTITION BY customer_id ORDER BY date_series) AS txn_sum
+    FROM (
+        SELECT
+            ds.customer_id, date_series, txn_group,
+            COUNT(txn_group) OVER(PARTITION BY ds.customer_id ORDER BY date_series) AS txn_count
+        FROM date_series ds
+        LEFT JOIN txn_deposit td ON ds.customer_id = td.customer_id
+        AND ds.date_series = td.txn_date
+        ORDER BY ds.customer_id, date_series
+    ) AS cust_bal_count
 ),
-customer_data as (
-    select customer_id, date_series, case when txn_row_no < 30 then NULL
-    when avg_last_30_days < 0 then 0
-    else avg_last_30_days end as data_store
-    from (
-        select *,
-        avg(txn_sum) over(partition by customer_id order by date_series rows between 30 preceding and current row) as avg_last_30_days,
-        row_number() over(partition by customer_id order by date_series) as txn_row_no
-        from customer_balance
-        order by 1
-    ) as last_30_days
+customer_data AS (
+    SELECT
+        customer_id, date_series, CASE WHEN txn_row_no < 30 THEN NULL
+        WHEN avg_last_30_days < 0 THEN 0 ELSE avg_last_30_days END AS data_store
+    FROM (
+        SELECT *,
+            AVG(txn_sum) OVER(PARTITION BY customer_id ORDER BY date_series ROWS BETWEEN 30 PRECEDING CURRENT ROW) AS avg_last_30_days,
+            ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY date_series) AS txn_row_no
+        FROM customer_balance
+        ORDER BY 1
+    ) AS last_30_days
 )
-select
-month, round(sum(data_allocation),1) as total_allocation
-from (
-    select customer_id,
-    date_trunc('month', date_series) as month,
-    max(data_store) as data_allocation
-    from customer_data
-    group by customer_id,month
-) as allocated_data
-group by 1
-order by 1;
+SELECT
+    month, ROUND(SUM(data_allocation),1) AS total_allocation
+FROM (
+    SELECT
+        customer_id,
+        DATE_TRUNC('MONTH', date_series) AS month,
+        MAX(data_store) AS data_allocation
+    FROM customer_data
+    GROUP BY customer_id, month
+) AS allocated_data
+GROUP BY 1
+ORDER BY 1;
 
 -- Option 3
-with txn_deposit as (
-    select *, case when txn_type = 'deposit'
-    then txn_amount else -1 * txn_amount end as txn_group
-    from data_bank.customer_transactions
+WITH txn_deposit AS (
+    SELECT *, CASE WHEN txn_type = 'deposit'
+    THEN txn_amount ELSE -1 * txn_amount END AS txn_group
+    FROM data_bank.customer_transactions
 ),
-date_series as (
-    select customer_id, generate_series(first_date, last_date, '1 day') as date_series
-    from (
-        select customer_id, max(txn_date) as last_date,
-        min(txn_date) as first_date
-        from txn_deposit
-        group by 1
+date_series AS (
+    SELECT
+        customer_id, generate_series(first_date, last_date, '1 day') AS date_series
+    FROM (
+        SELECT
+            customer_id, MAX(txn_date) AS last_date,
+            MIN(txn_date) AS first_date
+        FROM txn_deposit
+        GROUP BY 1
     ) min_max_series
 ),
-customer_balance as (
-    select *, sum(txn_group) over (partition by customer_id order by date_series) as txn_sum
-    from (
-        select ds.customer_id, date_series, txn_group
-        from date_series ds
-        left join txn_deposit td on ds.customer_id = td.customer_id
-        and ds.date_series = td.txn_date
-        order by ds.customer_id, date_series
-    ) as cust_bal_count
+customer_balance AS (
+    SELECT *, SUM(txn_group) OVER(PARTITION BY customer_id ORDER BY date_series) AS txn_sum
+    FROM (
+        SELECT ds.customer_id, date_series, txn_group
+        FROM date_series ds
+        LEFT JOIN txn_deposit td ON ds.customer_id = td.customer_id
+        AND ds.date_series = td.txn_date
+        ORDER BY ds.customer_id, date_series
+    ) AS cust_bal_count
 ),
-customer_data as (
-    select customer_id, date_series, case when txn_sum < 0 then 0
-    else txn_sum end as data_store
-    from customer_balance
+customer_data AS (
+    SELECT
+        customer_id, date_series,
+        CASE WHEN txn_sum < 0 THEN 0 ELSE txn_sum END AS data_store
+    FROM customer_balance
 )
-select
-month, round(sum(data_allocation),1) as total_allocation
-from (
-    select customer_id,
-    date_trunc('month', date_series) as month,
-    max(data_store) as data_allocation
-    from customer_data
-    group by customer_id, month
-) as allocated_data
-group by 1
-order by 1;
+SELECT
+    month, ROUND(SUM(data_allocation),1) AS total_allocation
+FROM (
+    SELECT
+        customer_id,
+        DATE_TRUNC('MONTH', date_series) AS month,
+        MAX(data_store) AS data_allocation
+    FROM customer_data
+    GROUP BY customer_id, month
+) AS allocated_data
+GROUP BY 1
+ORDER BY 1;
