@@ -38,8 +38,11 @@ FROM (
 GROUP BY 1
 ORDER BY 1;
 
-/**3. Is there any relationship between the number of pizzas and how long the order takes to prepare?
-ANSWER: YES, there is a relationship between the number of pizza and the time it takes to prepare it. The more the number of pizza ordered , the longer the time
+/**3. Is there any relationship between the number of pizzas and how long the
+order takes to prepare?
+
+ANSWER: YES, there is a relationship between the number of pizza and the time
+it takes to prepare it. The more the number of pizza ordered , the longer the time
 **/
 SELECT
     pizza_ordered,
