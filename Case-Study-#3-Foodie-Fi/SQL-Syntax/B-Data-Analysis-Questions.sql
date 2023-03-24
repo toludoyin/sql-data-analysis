@@ -39,16 +39,16 @@ FROM (
 SELECT *,
     ROUND((churn_after_trial/total_cust::NUMERIC)* 100) AS churn_after_trial_pretcg
 FROM (
-  SELECT
-    COUNT(DISTINCT customer_id) AS total_cust,
-    COUNT(DISTINCT customer_id) FILTER (WHERE  rn = 2 AND plan_name ='churn') AS churn_after_trial
-  FROM (
-    SELECT *,
-        ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date) AS rn
-    FROM foodie_fi.subscriptions
-    JOIN foodie_fi.plans USING(plan_id)
-    ORDER BY 2
-  ) AS churn_rn
+    SELECT
+        COUNT(DISTINCT customer_id) AS total_cust,
+        COUNT(DISTINCT customer_id) FILTER (WHERE  rn = 2 AND plan_name ='churn') AS churn_after_trial
+    FROM (
+        SELECT *,
+            ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date) AS rn
+        FROM foodie_fi.subscriptions
+        JOIN foodie_fi.plans USING(plan_id)
+        ORDER BY 2
+    ) AS churn_rn
 ) AS end_;
 
 -- 6. What is the number and percentage of customer plans after their initial free trial?
@@ -72,17 +72,17 @@ ORDER BY 2 desc;
 
 -- 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 WITH cust AS (
-SELECT *, ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date) AS rn
-FROM foodie_fi.subscriptions
-JOIN foodie_fi.plans USING(plan_id)
-WHERE start_date::DATE <= '2020-12-31'::DATE
-ORDER BY 2
+    SELECT *, ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date) AS rn
+    FROM foodie_fi.subscriptions
+    JOIN foodie_fi.plans USING(plan_id)
+    WHERE start_date::DATE <= '2020-12-31'::DATE
+    ORDER BY 2
 ),
 max_row as (
-SELECT
-    customer_id, MAX(rn) AS max_row_num
-FROM cust
-GROUP BY 1
+    SELECT
+        customer_id, MAX(rn) AS max_row_num
+    FROM cust
+    GROUP BY 1
 )
 SELECT *, ROUND(no_of_cust::NUMERIC/SUM(no_of_cust) OVER()*100,1) AS pertcg
 FROM (
@@ -128,15 +128,15 @@ ORDER BY 4 DESC
 SELECT
     avg_period_breakdown, ROUND(AVG(date_diff),1)
 FROM (
-   SELECT *,
-    CASE WHEN date_diff BETWEEN 0 AND 30 THEN '0-30'
-    WHEN date_diff BETWEEN 31 AND 60 THEN '31-60'
-    WHEN date_diff BETWEEN 61 AND 90 THEN '61-90'
-    WHEN date_diff BETWEEN 91 AND 120 THEN '91-120'
-    WHEN date_diff BETWEEN 121 AND 150 THEN '121-150'
-    WHEN date_diff BETWEEN 151 AND 180 THEN '151-180'
-    WHEN date_diff >= 181 THEN '>= 181'
-    END AS avg_period_breakdown
+    SELECT *,
+        CASE WHEN date_diff BETWEEN 0 AND 30 THEN '0-30'
+        WHEN date_diff BETWEEN 31 AND 60 THEN '31-60'
+        WHEN date_diff BETWEEN 61 AND 90 THEN '61-90'
+        WHEN date_diff BETWEEN 91 AND 120 THEN '91-120'
+        WHEN date_diff BETWEEN 121 AND 150 THEN '121-150'
+        WHEN date_diff BETWEEN 151 AND 180 THEN '151-180'
+        WHEN date_diff >= 181 THEN '>= 181'
+        END AS avg_period_breakdown
     FROM date_diff
 ) AS breakdown
 GROUP BY 1
