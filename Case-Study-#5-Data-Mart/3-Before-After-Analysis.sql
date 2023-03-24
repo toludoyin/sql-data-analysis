@@ -13,87 +13,88 @@ Using this analysis approach - answer the following questions:
 */
 
 -- 1.
-select
-    before_effect, after_effect, after_effect - before_effect as change,
-    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg
-from (
-    select
-        sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-        sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-	from (
-		select week_dates, sales
-		from data_mart.clean_weekly_sales
-        where week_dates between '2020-06-15'::date - interval '4 week'
-        and '2020-06-15'::date + interval '3 week'
-        order by 1
+SELECT
+    before_effect, after_effect, after_effect - before_effect AS change,
+    ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100,2) AS pertcg
+FROM (
+    SELECT
+        SUM(sales) FILTER (WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+        SUM(sales) FILTER (WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+	FROM (
+		SELECT week_dates, sales
+		FROM data_mart.clean_weekly_sales
+        WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '4 week'
+        AND '2020-06-15'::DATE + INTERVAL '3 week'
+        ORDER BY 1
 	) delta_weeks
-) as before_after;
+) AS before_after;
 
 -- 2.
-select
-    before_effect, after_effect, after_effect - before_effect as change,
-    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg
-from (
-    select
-        sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-        sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-	from (
-		select week_dates,vsales from data_mart.clean_weekly_sales
-        where week_dates between '2020-06-15'::date - interval '12 week'
-        and '2020-06-15'::date + interval '11 week'
-        order by 1
+SELECT
+    before_effect, after_effect, after_effect - before_effect AS change,
+    ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100,2) AS pertcg
+FROM (
+    SELECT
+        SUM(sales) FILTER (WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+        SUM(sales) FILTER (WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+	FROM (
+		SELECT week_dates, sales
+        FROM data_mart.clean_weekly_sales
+        WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '12 week'
+        AND '2020-06-15'::DATE + INTERVAL '11 week'
+        ORDER BY 1
 	) delta_weeks
 ) as before_after;
 
 -- 3. for 4 weeks before and after
-select
-    before_effect, after_effect, after_effect - before_effect as change,
-    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2018' as year_
-from (
-	select
-        sum(sales) filter(where week_dates < '2018-06-15'::date) as before_effect,
-        sum(sales) filter(where week_dates >= '2018-06-15'::date) as after_effect
-	from (
-		select week_dates, sales
-		from data_mart.clean_weekly_sales
-        where week_dates between '2018-06-15'::date - interval '4 week'
-        and '2018-06-15'::date + interval '3 week'
-        order by 1
+SELECT
+    before_effect, after_effect, after_effect - before_effect AS change,
+    ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100,2) AS pertcg, '2018' AS year_
+FROM (
+	SELECT
+        SUM(sales) FILTER (WHERE week_dates < '2018-06-15'::DATE) AS before_effect,
+        SUM(sales) FILTER (WHERE week_dates >= '2018-06-15'::DATE) AS after_effect
+	FROM (
+		SELECT week_dates, sales
+		FROM data_mart.clean_weekly_sales
+        WHERE week_dates BETWEEN '2018-06-15'::DATE - INTERVAL '4 week'
+        AND '2018-06-15'::DATE + INTERVAL '3 week'
+        ORDER BY 1
 	) delta_weeks
-) as before_after
+) AS before_after
 
-union all
+UNION ALL
 
-select
-    before_effect, after_effect, after_effect - before_effect as change,
-    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2019' as year_
-from (
-	select
-        sum(sales) filter(where week_dates < '2019-06-15'::date) as before_effect,
-        sum(sales) filter(where week_dates >= '2019-06-15'::date) as after_effect
-	from (
-		select week_dates, sales
-		from data_mart.clean_weekly_sales
-        where week_dates between '2019-06-15'::date - interval '4 week'
-        and '2019-06-15'::date + interval '3 week'
-        order by 1
+SELECT
+    before_effect, after_effect, after_effect - before_effect AS change,
+    ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100,2) AS pertcg, '2019' AS year_
+FROM (
+	SELECT
+        SUM(sales) FILTER (WHERE week_dates < '2019-06-15'::DATE) AS before_effect,
+        SUM(sales) FILTER (WHERE week_dates >= '2019-06-15'::DATE) AS after_effect
+	FROM (
+		SELECT week_dates, sales
+		FROM data_mart.clean_weekly_sales
+        WHERE week_dates BETWEEN '2019-06-15'::DATE - INTERVAL '4 week'
+        AND '2019-06-15'::DATE + INTERVAL '3 week'
+        ORDER BY 1
 	) delta_weeks
-) as before_after
+) AS before_after
 
-union all
+UNION ALL
 
-select
-    before_effect, after_effect, after_effect - before_effect as change,
-    round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2020' as year_
-from (
-	select
-        sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-        sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-	from (
-		select week_dates, sales
-		from data_mart.clean_weekly_sales
-        where week_dates between '2020-06-15'::date - interval '4 week'
-        and '2020-06-15'::date + interval '3 week'
-        order by 1
+SELECT
+    before_effect, after_effect, after_effect - before_effect AS change,
+    ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100,2) AS pertcg, '2020' AS year_
+FROM (
+	SELECT
+        SUM(sales) FILTER (WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+        SUM(sales) FILTER (WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+	FROM (
+		SELECT week_dates, sales
+		FROM data_mart.clean_weekly_sales
+        WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '4 week'
+        AND '2020-06-15'::DATE + INTERVAL '3 week'
+        ORDER BY 1
 	) delta_weeks
-) as before_after;
+) AS before_after;
