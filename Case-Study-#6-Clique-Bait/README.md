@@ -1,5 +1,5 @@
 ## Case Study #6: Clique Bait
-<img src="https://8weeksqlchallenge.com/images/case-study-designs/6.png" width="300" height="300">
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/6.png" width="350" height="350">
 
 ## Business Tasks
 In this case study I supported Clique Bait an online seafood store, to analyse its dataset and come up with creative solutions to calculate funnel fallout rates for the Clique Bait online store.
