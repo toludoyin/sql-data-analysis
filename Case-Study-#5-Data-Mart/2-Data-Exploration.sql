@@ -5,7 +5,7 @@ FROM data_mart.clean_weekly_sales;
 -- 2. What range of week numbers are missing from the dataset?
 WITH date_serie AS (
     SELECT
-        extract('week' FROM (GENERATE_SERIES(first_date, last_date, '1 week'))) AS date_seriess
+        EXTRACT('WEEK' FROM (GENERATE_SERIES(first_date, last_date, '1 week'))) AS date_seriess
     FROM (
         SELECT
             MIN(week_dates) AS first_date,
@@ -46,7 +46,7 @@ SELECT
     ROUND((shopify_sales/total::NUMERIC),2) AS shopify_pertcg, total
 FROM (
     SELECT
-        date_trunc('month', week_dates) AS month_,
+        DATE_TRUNC('MONTH', week_dates) AS month_,
         SUM(CASE WHEN platform = 'Retail' THEN sales END) AS retail_sales,
         SUM(CASE WHEN platform = 'Shopify' THEN sales END) AS shopify_sales,
         SUM(sales) AS total
@@ -62,7 +62,7 @@ SELECT
     ROUND((families_sales/total::NUMERIC),2) AS families_pertcg
 FROM (
     SELECT
-        DATE_TRUNC('year', week_dates) AS year_,
+        DATE_TRUNC('YEAR', week_dates) AS year_,
         SUM(CASE WHEN demographic = 'Couples' THEN sales END) AS couples_sales,
         SUM(CASE WHEN demographic = 'unknown' THEN sales END) AS unknown_sales,
         SUM(CASE WHEN demographic = 'Families' THEN sales END) AS families_sales,
