@@ -26,28 +26,28 @@ Generate a new avg_transaction column as the sales value divided by transactions
 
 DROP TABLE IF EXISTS data_mart.clean_weekly_sales;
 CREATE TABLE data_mart.clean_weekly_sales AS (
-    select
+    SELECT
         week_dates,
-        extract('week' from week_dates::date) as week_number,
-        extract('month' from week_dates::date) as month_number,
-        extract('year' from week_dates::date) as calender_year,
-        case when (segment) like '%1' then 'Young Adults'
-             when (segment) like '%2' then 'Middle Aged'
-             when (segment) like '%3' or (segment) like '%4' then 'Retirees'
-            else segment end as age_band,
-        case when (segment) like 'C%' then 'Couples'
-             when (segment) like 'F%' then 'Families'
-             else segment end as demographic,
+        EXTRACT('week' FROM week_dates::DATE) AS week_number,
+        EXTRACT('month' FROM week_dates::DATE) AS month_number,
+        EXTRACT('year' FROM week_dates::DATE) AS calender_year,
+        CASE WHEN (segment) LIKE '%1' THEN 'Young Adults'
+             WHEN (segment) LIKE '%2' THEN 'Middle Aged'
+             WHEN (segment) LIKE '%3' OR (segment) LIKE '%4' THEN 'Retirees'
+            ELSE segment END AS age_band,
+        CASE WHEN (segment) LIKE 'C%' THEN 'Couples'
+             WHEN (segment) LIKE 'F%' THEN 'Families'
+             ELSE segment END AS demographic,
         region, platform, customer_type, transactions, sales,
-        round(avg(sales/transactions),2) as avg_transaction
-    from (
-        select
-            to_date(week_date,'DD/MM/YY') as week_dates, region, platform,
+        ROUND(AVG(sales/transactions),2) AS avg_transaction
+    FROM (
+        SELECT
+            TO_DATE(week_date,'DD/MM/YY') AS week_dates, region, platform,
             customer_type, transactions, sales,
-            case when (segment) in ('null', NULL) then 'unknown'
-            else segment end as segment
-        from data_mart.weekly_sales
+            CASE WHEN (segment) IN ('null', NULL) THEN 'unknown'
+            ELSE segment END AS segment
+        FROM data_mart.weekly_sales
     )week_table
-    group by 1,2,3,4,5,6,7,8,9,10,11);
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11);
 
-select * from data_mart.clean_weekly_sales;
+SELECT * FROM data_mart.clean_weekly_sales;
