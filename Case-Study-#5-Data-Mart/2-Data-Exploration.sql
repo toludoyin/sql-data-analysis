@@ -3,7 +3,7 @@ SELECT TO_CHAR(week_dates, 'day') AS day_of_week
 FROM data_mart.clean_weekly_sales;
 
 -- 2. What range of week numbers are missing from the dataset?
-with date_serie AS (
+WITH date_serie AS (
     SELECT
         extract('week' FROM (GENERATE_SERIES(first_date, last_date, '1 week'))) AS date_seriess
     FROM (
@@ -25,7 +25,7 @@ ORDER BY 1;
 SELECT
     calender_year, SUM(transactions) AS total_txn
 FROM data_mart.clean_weekly_sales
-group by 1;
+GROUP BY 1;
 
 -- 4. What is the total sales for each region for each month?
 SELECT
