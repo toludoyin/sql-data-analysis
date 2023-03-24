@@ -9,7 +9,8 @@ purchase: 1/0 flag if a purchase event exists for each visit
 campaign_name: map the visit to a campaign if the visit_start_time falls between the start_date and end_date
 impression: count of ad impressions for each visit
 click: count of ad clicks for each visit
-(Optional column) cart_products: a comma separated text value with products added to the cart sorted by the order they were added to the cart (hint: use the sequence_number)
+(Optional column) cart_products: a comma separated text value with products
+added to the cart sorted by the order they were added to the cart (hint: use the sequence_number)
 Use the subsequent dataset to generate at least 5 insights for the Clique Bait
 team - bonus: prepare a single A4 infographic that the team can use for their
 management reporting sessions, be sure to emphasise the most important points from your findings.
