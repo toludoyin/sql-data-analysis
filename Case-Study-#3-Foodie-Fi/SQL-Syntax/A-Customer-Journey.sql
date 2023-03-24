@@ -21,9 +21,9 @@ customer_id 18: After the trail, remained in pro monthly plan after 7-days trial
 customer_id 19: After trail, remained in pro monthly plan. and after 2-month pgraded to pro annual.
 **/
 
-select
+SELECT
 *
-from foodie_fi.plans
-join foodie_fi.subscriptions using(plan_id)
-where customer_id = 1  --input customer_id here
-order by start_date
+FROM foodie_fi.plans
+JOIN foodie_fi.subscriptions USING(plan_id)
+WHERE customer_id = 1  --input customer_id here
+ORDER BY start_date
