@@ -1,5 +1,5 @@
 ## 🍜 Case Study #1: Danny's Diner
-<img src="https://8weeksqlchallenge.com/images/case-study-designs/1.png" width="500" height="500">
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/1.png" width="350" height="350">
 
 ## 📚 Business Task
 In this session I assisted Danny to answer a few question about his customers, such as;

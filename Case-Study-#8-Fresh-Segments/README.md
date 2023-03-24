@@ -1,5 +1,5 @@
 ## Case Study #8: Fresh Segments
-<img src="https://8weeksqlchallenge.com/images/case-study-designs/8.png" width="500" height="500">
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/8.png" width="350" height="350">
 
 ## Business Tasks
 Danny created Fresh Segments, a digital marketing agency that helps other businesses analyse trends in online ad click behaviour for their unique customer base.
