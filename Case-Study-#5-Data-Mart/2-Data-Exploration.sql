@@ -18,7 +18,7 @@ FROM date_serie
 WHERE date_series NOT IN (
     SELECT week_number
     FROM data_mart.clean_weekly_sales
-    )
+)
 ORDER BY 1;
 
 -- 3. How many total transactions were there for each year in the dataset?
@@ -90,7 +90,7 @@ SELECT
     shopify_sales/shopify_txn AS shopify_pertcg
 FROM (
     SELECT
-        DATE_TRUNC('year', week_dates) AS year_,
+        DATE_TRUNC('YEAR', week_dates) AS year_,
         SUM(CASE WHEN platform = 'Retail' THEN sales END) AS retail_sales,
         SUM(CASE WHEN platform = 'Retail' THEN transactions END) AS retail_txn,
         SUM(CASE WHEN platform = 'Shopify' THEN sales END) AS shopify_sales,
