@@ -81,7 +81,8 @@ FROM data_mart.clean_weekly_sales
 WHERE platform = 'Retail'
 GROUP BY 1 ORDER BY 2 DESC;
 
--- 9. Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
+-- 9. Can we use the avg_transaction column to find the average transaction
+-- size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
 -- Thought: using the avg_transaction column to get avgerage txn size will be a repeatition of average calculation
 SELECT
