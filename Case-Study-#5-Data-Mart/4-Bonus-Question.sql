@@ -8,108 +8,109 @@ demographic
 customer_type
 Do you have any further recommendations for Danny’s team at Data Mart or any interesting insights based off this analysis?
 **/
-select metrics, round(avg(pertcg),2) as avg_sales
-from (
-    select
-        'region' as metrics, initcap(region) as value, before_effect,
-        after_effect, after_effect - before_effect as change,
-        round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2018' as year_
-    from (
-        select
-            region, sum(sales) filter(where week_dates < '2018-06-15'::date) as before_effect,
-            sum(sales) filter(where week_dates >= '2018-06-15'::date) as after_effect
-        from (
-		    select week_dates, sales, region
-		    from data_mart.clean_weekly_sales
-            where week_dates between '2018-06-15'::date - interval '12 week'
-            and '2018-06-15'::date + interval '11 week'
-            order by 1
+SELECT metrics, ROUND(AVG(pertcg),2) AS avg_sales
+FROM (
+    SELECT
+        'region' AS metrics, initcap(region) AS value, before_effect,
+        after_effect, after_effect - before_effect AS change,
+        ROUND(((after_effect-before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2018' AS year_
+    FROM (
+        SELECT
+            region, SUM(sales) FILTER(WHERE week_dates < '2018-06-15'::DATE) AS before_effect,
+            SUM(sales) FILTER(WHERE week_dates >= '2018-06-15'::DATE) AS after_effect
+        FROM (
+		    SELECT week_dates, sales, region
+		    FROM data_mart.clean_weekly_sales
+            WHERE week_dates BETWEEN '2018-06-15'::DATE - INTERVAL '12 week'
+            AND '2018-06-15'::DATE + INTERVAL '11 week'
+            ORDER BY 1
 	    ) delta_weeks
-        group by 1
-    ) as before_after
+        GROUP BY 1
+    ) AS before_after
 
-    union all
+    UNION ALL
 
-    select
-        'platform' as metrics, initcap(platform) as value, before_effect,
-        after_effect, after_effect - before_effect as change,
-        round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2019' as year_
-    from (
-        select
-            platform, sum(sales) filter(where week_dates < '2019-06-15'::date) as before_effect,
-            sum(sales) filter(where week_dates >= '2019-06-15'::date) as after_effect
-        from (
-            select week_dates, sales, platform
-            from data_mart.clean_weekly_sales
-            where week_dates between '2019-06-15'::date - interval '12 week'
-            and '2019-06-15'::date + interval '11 week'
-            order by 1
+    SELECT
+        'platform' AS metrics, initcap(platform) AS value, before_effect,
+        after_effect, after_effect - before_effect AS change,
+        ROUND(((after_effect - before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2019' AS year_
+    FROM (
+        SELECT
+            platform, SUM(sales) FILTER(WHERE week_dates < '2019-06-15'::DATE) AS before_effect,
+            SUM(sales) FILTER(WHERE week_dates >= '2019-06-15'::DATE) AS after_effect
+        FROM (
+            SELECT week_dates, sales, platform
+            FROM data_mart.clean_weekly_sales
+            WHERE week_dates BETWEEN '2019-06-15'::DATE - INTERVAL '12 week'
+            AND '2019-06-15'::DATE + INTERVAL '11 week'
+            ORDER BY 1
         ) delta_weeks
-        group by 1
-    ) as before_after
+        GROUP BY 1
+    ) AS before_after
 
-    union all
+    UNION ALL
 
-    select
-        'age_band' as metrics, initcap(age_band) as value,
-        before_effect, after_effect, after_effect - before_effect as change,
-        round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2020' as year_
-    from (
-        select
-            age_band, sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-            sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-        from (
-            select week_dates, sales, age_band
-            from data_mart.clean_weekly_sales
-            where week_dates between '2020-06-15'::date - interval '12 week'
-            and '2020-06-15'::date + interval '11 week'
-            order by 1
+    SELECT
+        'age_band' AS metrics, initcap(age_band) AS value,
+        before_effect, after_effect, after_effect - before_effect AS change,
+        ROUND(((after_effect-before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2020' AS year_
+    FROM (
+        SELECT
+            age_band, SUM(sales) FILTER(WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+            SUM(sales) FILTER(WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+        FROM (
+            SELECT week_dates, sales, age_band
+            FROM data_mart.clean_weekly_sales
+            WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '12 week'
+            AND '2020-06-15'::DATE + INTERVAL '11 week'
+            ORDER BY 1
         ) delta_weeks
-        group by 1
-    ) as before_after
+        GROUP BY 1
+    ) AS before_after
 
-    union all
+    UNION ALL
 
-    select
-        'demographic' as metrics, initcap(demographic) as value,
-        before_effect, after_effect, after_effect - before_effect as change,
-        round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2020' as year_
-    from (
-        select
-            demographic, sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-            sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-        from (
-            select week_dates, sales, demographic
-            from data_mart.clean_weekly_sales
-            where week_dates between '2020-06-15'::date - interval '12 week'
-            and '2020-06-15'::date + interval '11 week'
-            order by 1
+    SELECT
+        'demographic' AS metrics, INITCAP(demographic) AS value,
+        before_effect, after_effect, after_effect - before_effect AS change,
+        ROUND(((after_effect - before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2020' AS year_
+    FROM (
+        SELECT
+            demographic, SUM(sales) FILTER(WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+            SUM(sales) FILTER(WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+        FROM (
+            SELECT week_dates, sales, demographic
+            FROM data_mart.clean_weekly_sales
+            WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '12 week'
+            AND '2020-06-15'::DATE + INTERVAL '11 week'
+            ORDER BY 1
         ) delta_weeks
-        group by 1
-    ) as before_after
+        GROUP BY 1
+    ) AS before_after
 
-    union all
+    UNION ALL
 
-    select
-        'customer_type' as metrics, initcap(customer_type) as value,
-        before_effect, after_effect, after_effect - before_effect as change,
-        round(((after_effect-before_effect)/before_effect::numeric)*100,2) as pertcg, '2020' as year_
-    from (
-        select
-            customer_type, sum(sales) filter(where week_dates < '2020-06-15'::date) as before_effect,
-            sum(sales) filter(where week_dates >= '2020-06-15'::date) as after_effect
-        from (
-            select week_dates, sales, customer_type
-            from data_mart.clean_weekly_sales
-            where week_dates between '2020-06-15'::date - interval '12 week'
-            and '2020-06-15'::date + interval '11 week'
-            order by 1
+    SELECT
+        'customer_type' AS metrics,
+        INITCAP(customer_type) AS value,
+        before_effect, after_effect, after_effect - before_effect AS change,
+        ROUND(((after_effect - before_effect) / before_effect::NUMERIC)*100, 2) AS pertcg, '2020' AS year_
+    FROM (
+        SELECT
+            customer_type, SUM(sales) FILTER(WHERE week_dates < '2020-06-15'::DATE) AS before_effect,
+            SUM(sales) FILTER(WHERE week_dates >= '2020-06-15'::DATE) AS after_effect
+        FROM (
+            SELECT week_dates, sales, customer_type
+            FROM data_mart.clean_weekly_sales
+            WHERE week_dates BETWEEN '2020-06-15'::DATE - INTERVAL '12 week'
+            AND '2020-06-15'::DATE + INTERVAL'11 week'
+            ORDER BY 1
         ) delta_weeks
-        group by 1
-    ) as before_after
-) as tmp
-group by 1
-order by 2
+        GROUP BY 1
+    ) AS before_after
+) AS tmp
+GROUP BY 1
+ORDER BY 2
 
 /**
 For the 2020, 12 week before and after period, region and platform have the highest negative sales metric performance impact.
