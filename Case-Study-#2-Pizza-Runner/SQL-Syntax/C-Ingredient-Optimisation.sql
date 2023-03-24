@@ -114,7 +114,7 @@ exclusions_toppings AS (
     GROUP BY 1
 )
 SELECT
-    concat(pizza_name,
+    CONCAT(pizza_name,
     CASE WHEN e.extra IS NULL THEN '' ELSE '- Exclude ' END, e.extra,
     CASE WHEN t.exclusion IS NULL THEN '' ELSE ' - Exclude ' END,
     t.exclusion) AS pizza_ordered
