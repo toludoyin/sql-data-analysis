@@ -103,8 +103,8 @@ year_month value? Can you describe what is happening for these 5 interests?
 * range between minimum and maximum is very wide.
 * notice that month_year for the maximum occurred before the minimum month_year
 which means something must have changed in the product or service render for
-percentile_ranking to have decline in recent time and this should be looked into for business understanding.
-* both minimum and maximum of each interest
+percentile_ranking to have decline in recent time (i.e in July 2018, max_percentile was at 86.69 and at August 2019, declined to 7.92) and this should be looked into for business understanding.
+
 */
 WITH filter_data AS (
     SELECT
@@ -152,6 +152,7 @@ GROUP BY 1
 How would you describe our customers in this segment based off their
 -- composition and ranking values? What sort of products or services should we show to these customers and what should we avoid?
 
+ANSWER:
 what we should avoid, which are the least rank interest of our customers are; Winter Apparel Shoppers, Fitness Activity Tracker Users, Mens Shoe Shoppers, Shoe Shoppers, Preppy Clothing Shoppers
 
 using the average ranking value, League of Legends Video Game Fans ranks the topmost interest of the customers, therefore, there is need to invest in giving the best to the customers.
