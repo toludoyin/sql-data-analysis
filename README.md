@@ -6,7 +6,7 @@ In this project, I took up the role of a data analyst to modify existing schema 
 To access each Introduction of task, Entity Relationship Diagram, Schema and Case Study Questions on [Data With Danny](https://8weeksqlchallenge.com/about/) website. Click each of the table of content below.
 
 ## 📚 Table of Contents
-Case Study                                                                                     |  Solution status   
+Case Study                                                                                     |  Solution Status   
 ---------------------------------------------------------------------------------------------- | ----------
 | **[Case study #1: Danny's Diner](https://8weeksqlchallenge.com/case-study-1/)**              |  Completed
 | **[Case study #2: Pizza Runner](https://8weeksqlchallenge.com/case-study-2/)**               |  Completed
