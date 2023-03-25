@@ -155,5 +155,4 @@ How would you describe our customers in this segment based off their
 what we should avoid, which are the least rank interest of our customers are; Winter Apparel Shoppers, Fitness Activity Tracker Users, Mens Shoe Shoppers, Shoe Shoppers, Preppy Clothing Shoppers
 
 using the average ranking value, League of Legends Video Game Fans ranks the topmost interest of the customers, therefore, there is need to invest in giving the best to the customers.
-
 */
