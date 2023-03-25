@@ -50,6 +50,18 @@ SELECT * FROM min_interest;
 -- SELECT * FROM max_interest;
 
 -- Which 5 interests had the lowest average ranking value?
+WITH filter_data AS (
+    SELECT
+        interest_id,
+        COUNT(DISTINCT month_year) AS month_count
+    FROM fresh_segments.interest_metrics
+    GROUP BY 1
+    HAVING COUNT(DISTINCT month_year) >= 6
+),
+filtered_data AS (
+    SELECT * FROM filter_data
+    JOIN fresh_segments.interest_metrics USING(interest_id)
+)
 SELECT
     interest_name,
     AVG(ranking)::NUMERIC(10,2) AS avg_ranking
@@ -61,6 +73,18 @@ ORDER BY 2
 LIMIT 5;
 
 -- Which 5 interests had the largest standard deviation in their percentile_ranking value?
+WITH filter_data AS (
+    SELECT
+        interest_id,
+        COUNT(DISTINCT month_year) AS month_count
+    FROM fresh_segments.interest_metrics
+    GROUP BY 1
+    HAVING COUNT(DISTINCT month_year) >= 6
+),
+filtered_data AS (
+    SELECT * FROM filter_data
+    JOIN fresh_segments.interest_metrics USING(interest_id)
+)
 SELECT
     interest_name,
     ROUND(STDDEV(percentile_ranking)::NUMERIC, 2) AS std_percentile_ranking
@@ -124,5 +148,12 @@ SELECT interest_name,
 FROM min_max_percentile
 GROUP BY 1
 
--- How would you describe our customers in this segment based off their
+/*
+How would you describe our customers in this segment based off their
 -- composition and ranking values? What sort of products or services should we show to these customers and what should we avoid?
+
+what we should avoid, which are the least rank interest of our customers are; Winter Apparel Shoppers, Fitness Activity Tracker Users, Mens Shoe Shoppers, Shoe Shoppers, Preppy Clothing Shoppers
+
+using the average ranking value, League of Legends Video Game Fans ranks the topmost interest of the customers, therefore, there is need to invest in giving the best to the customers.
+
+*/
