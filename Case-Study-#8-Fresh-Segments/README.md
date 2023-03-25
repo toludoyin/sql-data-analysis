@@ -13,3 +13,5 @@ In these tasks, I analysed aggregated metrics for an example client and provide 
 [2. Interest-Analysis](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%238-Fresh-Segments/Interest-Analysis.sql)
 
 [3. Segment-Aanlysis](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%238-Fresh-Segments/Segment-Analysis.sql)
+
+[4. Index-Analysis](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%238-Fresh-Segments/Index-Analysis.sql)
