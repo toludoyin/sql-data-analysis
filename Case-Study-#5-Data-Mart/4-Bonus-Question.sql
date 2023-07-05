@@ -31,7 +31,7 @@ FROM (
     UNION ALL
 
     SELECT
-        'platform' AS metrics, initcap(platform) AS value, before_effect,
+        'platform' AS metrics, INITCAP(platform) AS value, before_effect,
         after_effect, after_effect - before_effect AS change,
         ROUND(((after_effect - before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2019' AS year_
     FROM (
@@ -51,7 +51,7 @@ FROM (
     UNION ALL
 
     SELECT
-        'age_band' AS metrics, initcap(age_band) AS value,
+        'age_band' AS metrics, INITCAP(age_band) AS value,
         before_effect, after_effect, after_effect - before_effect AS change,
         ROUND(((after_effect-before_effect)/before_effect::NUMERIC)*100,2) AS pertcg, '2020' AS year_
     FROM (
