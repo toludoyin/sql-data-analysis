@@ -2,7 +2,7 @@
 <img src="https://8weeksqlchallenge.com/images/case-study-designs/3.png" width="350" height="350">
 
 ## Business Tasks
-This case study focuses on using subscription style digital data to answer important business questions.
+This case study focuses on using subscription-style digital data to answer the below-stated business questions.
 
 [A. Customer Journey](https://github.com/toludoyin/8-week-sql-challenge/blob/main/Case-Study-%233-Foodie-Fi/SQL-Syntax/A-Customer-Journey.sql)
 
