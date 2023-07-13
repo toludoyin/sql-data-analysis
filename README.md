@@ -16,6 +16,3 @@ Case Study                                                                      
 | **[Case study #6: Clique Bait](https://8weeksqlchallenge.com/case-study-6/)**                |  Completed
 | **[Case study #7: Balanced Tree Clothing Co.](https://8weeksqlchallenge.com/case-study-7/)** |  In progress
 | **[Case study #8: Fresh Segments](https://8weeksqlchallenge.com/case-study-8/)**             |  Completed
-
-### Solutions Summary
-I leverage windows function and frames, aggregate, conditional, strings, date, generate functions, CTE(common table expression), Subqueries to solve the hidden and listed(questions) challenges in each of the case study to help each of the firm make informed decisions.
