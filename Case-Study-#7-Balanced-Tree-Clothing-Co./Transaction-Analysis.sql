@@ -14,9 +14,9 @@ WITH txn_revenue AS (
     GROUP BY 1
 )
 SELECT
-PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY revenue) AS q_25,
-PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY revenue) AS q_50,
-PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY revenue) AS q_75
+PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY revenue) AS per_25,
+PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY revenue) AS per_50,
+PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY revenue) AS per_75
 FROM txn_revenue;
 
 -- What is the average discount value per transaction?
