@@ -175,7 +175,4 @@ SELECT * FROM (
     GROUP BY 1,2,3
     ORDER BY 5
 ) AS conbination
-WHERE rank_row = 1
-
-
-
+WHERE rank_row = 1;
