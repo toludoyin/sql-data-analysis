@@ -20,18 +20,30 @@ PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY revenue) AS per_75
 FROM txn_revenue;
 
 -- What is the average discount value per transaction?
-SELECT txn_id, AVG(discount) AS avg_discount
+SELECT
+    ROUND(AVG(total_discount),2) AS avg_discount
+FROM (
+    SELECT
+        txn_id, SUM(price * qty * discount)/100 AS total_discount
+    FROM balanced_tree.sales
+    GROUP BY 1
+) AS avg_discount;
+
+-- What is the percentage split of all transactions for members vs non-members?
+SELECT
+    member,
+    ROUND(COUNT(DISTINCT txn_id)/(SUM(COUNT(DISTINCT txn_id)) OVER()) * 100, 2) AS perctg_distribution
 FROM balanced_tree.sales
 GROUP BY 1;
 
--- What is the percentage split of all transactions for members vs non-members?
-  SELECT ROUND(AVG(total_discount),2) AS avg_discount FROM (
-  SELECT txn_id, SUM(price * qty * discount)/100 AS total_discount
-  FROM balanced_tree.sales
-  GROUP BY 1
-    ) AS avg_dis;
-
 -- What is the average revenue for member transactions and non-member transactions?
-SELECT bts.member, ROUND(AVG(price * qty),2) AS avg_discount
-FROM balanced_tree.sales AS bts
+SELECT member, ROUND(AVG(revenue),2) AS avg_revenue
+FROM (
+  SELECT
+    bts.member,
+    txn_id,
+    SUM(price * qty) AS revenue
+  FROM balanced_tree.sales AS bts
+  GROUP BY 1,2
+) AS revenue_calc
 GROUP BY 1;
