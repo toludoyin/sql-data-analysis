@@ -16,3 +16,5 @@ Case Study                                                                      
 | **[Case study #6: Clique Bait](https://8weeksqlchallenge.com/case-study-6/)**                |  Completed
 | **[Case study #7: Balanced Tree Clothing Co.](https://8weeksqlchallenge.com/case-study-7/)** |  In progress
 | **[Case study #8: Fresh Segments](https://8weeksqlchallenge.com/case-study-8/)**             |  Completed
+
+In this SQL challenge, I queried the database to answer business questions using the SQL syntax such as CTEs(Common Table Expression), Subqueries, Joins(inner, outer, left, right, cross), String Manipulation functions, Window functions and frames(lag, lead, unbounded preceeding, rank, row_number) to clean, summarize statistics, explore, pre-process and analyse the dataset of different sector.
